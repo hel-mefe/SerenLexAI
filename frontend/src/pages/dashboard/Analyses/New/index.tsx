@@ -4,10 +4,10 @@ import { motion } from 'framer-motion'
 import { NewAnalysisHeader } from '@/components/newanalysis/NewAnalysisHeader'
 import { AnalysisModeToggle } from '@/components/newanalysis/AnalaysisModeToggle'
 import { UploadDropzone } from '@/components/newanalysis/UploadDropZone'
-import { StartAnalysisButton } from '@/components/newanalysis/StartAnalysisbutton'
+import { StartAnalysisButton } from '@/components/newanalysis/StartAnalysisButton'
 import { FeatureHighlights } from '@/components/newanalysis/FeatureHighlights'
 
-export default function NewAnalysisPage() {
+export function NewAnalysisPage() {
   const [mode, setMode] = useState<'upload' | 'paste'>('upload')
   const [file, setFile] = useState<File | null>(null)
 

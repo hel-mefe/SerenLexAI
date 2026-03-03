@@ -5,7 +5,7 @@ export function NewAnalysisHeader() {
   const navigate = useNavigate()
 
   return (
-    <header className="sticky top-0 z-20 flex items-center justify-between px-8 py-4 bg-white/70 backdrop-blur-xl border-b border-black/5">
+    <header className="sticky rounded-3xl top-0 z-20 flex items-center justify-between px-8 py-4 bg-white/70 backdrop-blur-xl border-b border-black/5">
       <div className="flex items-center gap-3">
         <button
           onClick={() => navigate('/dashboard')}

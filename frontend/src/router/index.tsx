@@ -12,6 +12,7 @@ import { HistoryPage } from '@/pages/dashboard/HistoryPage'
 import { SettingsPage } from '@/pages/dashboard/SettingsPage'
 import { RefreshPage } from '@/pages/dashboard/RefreshPage'
 import { AnalysisReportPage } from '@/pages/dashboard/Analyses/AnalysisReportPage'
+import { NewAnalysisPage } from '@/pages/dashboard/Analyses/New'
 
 export function AppRouter() {
   return (
@@ -44,6 +45,7 @@ export function AppRouter() {
         <Route path="settings" element={<SettingsPage />} />
         <Route path="refresh" element={<RefreshPage />} />
         <Route path="analyses/:analysisId" element={<AnalysisReportPage />} />
+        <Route path="analyses/new" element={<NewAnalysisPage />} />
       </Route>
 
       {/* Fallback */}
