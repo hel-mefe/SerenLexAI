@@ -1,11 +1,19 @@
-type Props = {
-  children: React.ReactNode
-}
+import { Sidebar } from '@/components/dashboard/sidebar/Sidebar'
+import { DashboardHeader } from '@/components/dashboard/DashboardHeader'
+import { Outlet } from 'react-router-dom'
 
-export function DashboardLayout({ children }: Props) {
+export function DashboardLayout() {
   return (
-    <div className="min-h-screen flex bg-gradient-to-br from-neutral-100 via-neutral-200 to-neutral-100">
-      {children}
+    <div className="min-h-screen flex bg-dashboard-gradient">
+      <Sidebar />
+
+      <div className="flex-1 flex flex-col min-w-0">
+        <DashboardHeader />
+
+        <main className="flex-1 p-8 overflow-auto space-y-8">
+          <Outlet />
+        </main>
+      </div>
     </div>
   )
 }
