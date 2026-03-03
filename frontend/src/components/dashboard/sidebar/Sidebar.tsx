@@ -4,7 +4,7 @@ import { SidebarItem } from './SidebarItem'
 
 export function Sidebar() {
   return (
-  <aside className="w-24 rounded-r-[40px] flex-shrink-0 flex flex-col items-center py-6 gap-2 sticky top-0 h-screen z-30 bg-sidebar-gradient border-r border-white/5 relative after:absolute after:top-[10%] after:bottom-[10%] after:right-0 after:w-px after:bg-gradient-to-b after:from-transparent after:via-white/15 after:to-transparent after:pointer-events-none">      {/* Logo */}
+  <aside className="w-22 flex-shrink-0 flex flex-col items-center py-6 gap-2 sticky top-0 h-screen z-30 bg-sidebar-gradient border-r border-white/5 relative after:absolute after:top-[10%] after:bottom-[10%] after:right-0 after:w-px after:bg-gradient-to-b after:from-transparent after:via-white/15 after:to-transparent after:pointer-events-none">      {/* Logo */}
       <div className="w-11 h-11 flex items-center justify-center mb-4">
         <h2 className='text-white'>SLAI</h2>
       </div>
