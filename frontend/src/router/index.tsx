@@ -1,6 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { PublicLayout } from './PublicLayout'
-import { DashboardLayout } from '@/components/layouts/DashboardLayout'
 import { ProtectedRoute } from './ProtectedRoute'
 import SignInPage from '@/pages/signin'
 import { DashboardPage } from '@/pages/dashboard'

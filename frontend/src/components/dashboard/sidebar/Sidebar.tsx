@@ -1,6 +1,5 @@
 import { SIDEBAR_ITEMS, SIDEBAR_BOTTOM_ITEMS } from '@/config/sidebar.config'
 import { SidebarItem } from './SidebarItem'
-import LogoIcon from '@/assets/logo.png'
 
 export function Sidebar() {
   return (
