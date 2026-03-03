@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import { AnalysisTitleBlock } from './AnalysisTitleBlock'
 
 type Props = {
-  analysisId?: string
+  analysisId?: string | undefined
 }
 
 export function AnalysisTopBar({ analysisId }: Props) {

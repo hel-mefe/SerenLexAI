@@ -65,12 +65,12 @@ export function AnalysisReportPage() {
           <ClauseList filter={severityFilter} />
         </div>
 
-        {/* Sticky Clause Navigation
+        {/* Sticky Clause Navigation */}
         <div className="hidden xl:block">
           <div className="sticky top-24">
             <ClauseNavigation />
           </div>
-        </div> */}
+        </div>
       </div>
     </motion.div>
   )
