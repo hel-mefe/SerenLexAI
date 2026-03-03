@@ -1,5 +1,3 @@
-import logo from '@/assets/logo.png'
-
 export function BrandLogo() {
   return (
     <div className="flex items-center gap-x-2 mt-10 ml-12">

@@ -1,3 +1,4 @@
+import { MarketingFooter } from "./MarketingFooter";
 import { StatsGroup } from "./StatsGroup";
 
 export function HeroContent() {
@@ -16,7 +17,12 @@ export function HeroContent() {
             </p>
         </div>
 
+    <div className="footer flex flex-col gap-y-2">
       <StatsGroup />
+
+      <MarketingFooter />
+
+    </div>
 
     </div>
   )
