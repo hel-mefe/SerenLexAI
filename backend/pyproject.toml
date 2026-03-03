@@ -1,0 +1,32 @@
+[project]
+name = "backend"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "alembic",
+    "celery",
+    "fastapi",
+    "langchain",
+    "langgraph",
+    "loguru>=0.7.3",
+    "openai",
+    "pdfplumber",
+    "pgvector",
+    "psycopg[binary]",
+    "pydantic-settings",
+    "python-dotenv",
+    "redis",
+    "sqlalchemy",
+    "structlog>=25.5.0",
+    "tiktoken",
+    "uvicorn",
+]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "pytest>=9.0.2",
+    "ruff>=0.15.4",
+]
