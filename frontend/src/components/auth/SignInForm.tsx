@@ -3,23 +3,29 @@ import { FormInput } from './FormInput'
 import { PasswordInput } from './PasswordInput'
 import { PrimaryButton } from './PrimaryButton'
 import { AuthDivider } from './AuthDivider'
-
+import { authStorage } from '@/lib/auth.storage'
+import { useNavigate } from 'react-router-dom'
 
 export function SignInForm() {
-  const form = useForm({
+    const navigate = useNavigate() ;
+
+    const form = useForm({
     defaultValues: {
-      email: '',
-      password: '',
+        email: '',
+        password: '',
     },
     onSubmit: async ({ value }) => {
-      console.log('Submitting:', value)
-
-        console.log('VALUE -> ',value)
-    console.log('EMAIL -> ', value.email)
-    console.log('PASSWORD -> ', value.password)
-      // TODO: integrate with backend API
-    },
-  })
+        if (
+            value.email === 'Muhammad' &&
+            value.password === 'Muhammad'
+        ) {
+            authStorage.login()
+            navigate('/dashboard/overview')
+        } else {
+            alert('Invalid credentials')
+        }
+        }
+    })
 
   return (
     <div className="flex-1 flex items-center justify-center px-10 pb-6">

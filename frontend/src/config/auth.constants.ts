@@ -8,3 +8,4 @@ export const ASSESSMENT_CREDENTIALS: AuthAssessmentCredentials = {
     password: 'Muhammad',
 }
 
+export const AUTH_KEY = 'serenlexai_auth'

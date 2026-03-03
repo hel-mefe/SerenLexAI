@@ -1,11 +1,10 @@
 import './App.css'
 import SignInPage from './pages/signin'
+import { AppRouter } from './router'
 
 function App() {
   return (
-    <div className='h-screen w-screen flex justify-center items-center'>
-      <SignInPage />
-    </div>
+    <AppRouter />
   )
 }
 
