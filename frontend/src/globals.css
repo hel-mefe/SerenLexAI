@@ -1,0 +1,106 @@
+@import "tailwindcss";
+
+/** SerenLexAI Design System **/
+
+@theme {
+  /** Brand (Deep Trust Navy) **/
+  --color-brand-950: #0D1117;
+  --color-brand-900: #0F1320;
+  --color-brand-850: #121826;
+  --color-brand-800: #161B27;
+  --color-brand-700: #1A1F2E;
+  --color-brand-600: #2D3550;
+  --color-brand-500: #3B4566;
+  --color-brand-400: #556080;
+
+  /** Neutral (Slate System) **/
+  --color-neutral-950: #0F172A;
+  --color-neutral-900: #1E293B;
+  --color-neutral-800: #334155;
+  --color-neutral-700: #475569;
+  --color-neutral-600: #64748B;
+  --color-neutral-500: #94A3B8;
+  --color-neutral-400: #CBD5E1;
+  --color-neutral-300: #E2E8F0;
+  --color-neutral-200: #F1F5F9;
+  --color-neutral-100: #F8FAFC;
+
+  /** Surface **/
+  --color-surface: #F4F6F8;
+  --color-surface-subtle: #EEF1F4;
+  --color-surface-muted: #E6EAF0;
+  --color-surface-card: #FFFFFF;
+  --color-surface-dark: #141824;
+
+  /** Risk System **/
+  --color-risk-high: #EF4444;
+  --color-risk-high-bg: #FEF2F2;
+
+  --color-risk-medium: #F59E0B;
+  --color-risk-medium-bg: #FFFBEB;
+
+  --color-risk-low: #10B981;
+  --color-risk-low-bg: #ECFDF5;
+
+  /** Accent (Subtle Glows) **/
+  --color-accent-indigo: #6366F1;
+  --color-accent-emerald: #10B981;
+
+  /** Borders **/ 
+  --color-border-light: #E5E7EB;
+  --color-border-muted: #D1D5DB;
+  --color-border-dark: #2A3347;
+
+  /** Radius **/
+  --radius-2xl: 1.25rem;
+  --radius-3xl: 1.75rem;
+
+  /** Shadows **/
+  --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.08);
+  --shadow-glow: 0 40px 100px rgba(0, 0, 0, 0.6);
+}
+
+/*** Utilities Layers ***/
+
+@layer utilities {
+  .bg-auth-gradient {
+    background: linear-gradient(
+      135deg,
+      #0D1117 0%,
+      #161B27 40%,
+      #1A2035 70%,
+      #0F1320 100%
+    );
+  }
+
+  .bg-card-gradient {
+    background: linear-gradient(
+      135deg,
+      #1A1F2E 0%,
+      #2D3550 100%
+    );
+  }
+
+  .glass-dark {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+}
+
+html {
+  font-family: Inter, sans-serif;
+}
+
+body {
+  background: var(--color-surface);
+  color: var(--color-neutral-900);
+}
