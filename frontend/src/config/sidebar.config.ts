@@ -20,7 +20,6 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
   { icon: FileText, path: '/analyses', key: 'analyses' },
   { icon: UploadCloud, path: '/upload', key: 'upload' },
   { icon: History, path: '/history', key: 'history' },
-  { icon: Calendar, path: '/calendar', key: 'calendar' },
 ]
 
 export const SIDEBAR_BOTTOM_ITEMS: SidebarItem[] = [
