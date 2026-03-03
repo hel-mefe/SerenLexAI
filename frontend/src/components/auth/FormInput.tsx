@@ -1,16 +1,37 @@
+type Props = {
+  label: string
+  placeholder?: string
+  field: any
+}
+
 export function FormInput({
   label,
-}: {
-  label: string
-}) {
+  placeholder,
+  field,
+}: Props) {
   return (
     <div className="mb-4">
-      <label className="block text-xs font-semibold text-neutral-500 uppercase mb-2">
+      <label className="block text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-2">
         {label}
       </label>
+
       <input
-        className="w-full px-4 py-3.5 rounded-xl bg-neutral-100 border border-border-light focus:ring-2 focus:ring-brand-600/20 outline-none transition"
+        value={field.state.value}
+        onChange={(e) => field.handleChange(e.target.value)}
+        onBlur={field.handleBlur}
+        placeholder={placeholder}
+        className="w-full px-4 py-3.5 rounded-xl text-sm text-slate-800 placeholder-slate-300 outline-none transition-all"
+        style={{
+          background: 'rgb(247, 248, 250)',
+          border: '1.5px solid rgb(234, 236, 240)',
+        }}
       />
+
+      {field.state.meta.errors?.length ? (
+        <p className="text-xs text-risk-high mt-2">
+          {field.state.meta.errors[0]}
+        </p>
+      ) : null}
     </div>
   )
 }
