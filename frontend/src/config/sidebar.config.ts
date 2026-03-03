@@ -16,12 +16,12 @@ export interface SidebarItem {
 
 export const SIDEBAR_ITEMS: SidebarItem[] = [
   { icon: Home, path: '/dashboard', key: 'home' },
-  { icon: FileText, path: '/analyses', key: 'analyses' },
-  { icon: UploadCloud, path: '/upload', key: 'upload' },
-  { icon: History, path: '/history', key: 'history' },
+  { icon: FileText, path: '/dashboard/analyses', key: 'analyses' },
+  { icon: UploadCloud, path: '/dashboard/upload', key: 'upload' },
+  { icon: History, path: '/dashboard/history', key: 'history' },
 ]
 
 export const SIDEBAR_BOTTOM_ITEMS: SidebarItem[] = [
-  { icon: Settings, path: '/settings', key: 'settings' },
-  { icon: RefreshCcw, path: '/refresh', key: 'refresh' },
+  { icon: Settings, path: '/dashboard/settings', key: 'settings' },
+  { icon: RefreshCcw, path: '/dashboard/refresh', key: 'refresh' },
 ]
