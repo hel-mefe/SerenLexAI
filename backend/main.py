@@ -3,6 +3,8 @@ from __future__ import annotations
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+import models  # noqa: F401
+
 from api.analyses import router as analyses_router
 from api.actions import router as actions_router
 from core.config import settings
