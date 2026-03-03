@@ -1,8 +1,8 @@
 import { Sidebar } from '@/components/dashboard/sidebar/Sidebar'
-import { DashboardHeader } from '@/components/dashboard/DashboardHeader'
 import { ActionCard } from '@/components/dashboard/cards/ActionCard'
 import { RiskDistributionCard } from '@/components/dashboard/cards/RiskDistributionCard'
 import { CompletedTodayCard } from '@/components/dashboard/cards/CompletedTodayCard'
+import { motion } from 'framer-motion'
 
 import {
   UploadCloud,
@@ -20,7 +20,24 @@ export function DashboardPage() {
 
         <main className="flex-1 p-8 overflow-auto space-y-8">
           {/* Action Cards */}
-            <div className="grid grid-cols-3 gap-5 relative z-0">
+        <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+        className="flex items-center ml-2 justify-between"
+        >
+        <div>
+        <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
+        Quick Actions
+        </h2>
+
+        <p className="text-sm text-slate-500 max-w-xl">
+        Take a quick action to analyze, review, or export contract insights instantly.
+        </p>
+
+        </div>
+        </motion.div>            
+        <div className="grid grid-cols-3 gap-5 relative z-0">
             <ActionCard
                 title="Analyze Contract"
                 description="Upload PDF or paste text"
