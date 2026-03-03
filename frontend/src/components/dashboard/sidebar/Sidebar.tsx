@@ -1,5 +1,6 @@
 import { SIDEBAR_ITEMS, SIDEBAR_BOTTOM_ITEMS } from '@/config/sidebar.config'
 import { SidebarItem } from './SidebarItem'
+import { NavLink } from 'react-router-dom'
 
 export function Sidebar() {
   return (
@@ -13,16 +14,28 @@ export function Sidebar() {
       <div className="w-8 h-px bg-white/10 mb-2" />
 
       {/* Main Nav */}
-      <nav className="flex flex-col items-center gap-2 flex-1">
-        {SIDEBAR_ITEMS.map((item: any) => (
-          <SidebarItem
+      <nav className="flex flex-col items-center gap-4 flex-1">
+        {SIDEBAR_ITEMS.map((item) => (
+          <NavLink
             key={item.key}
-            icon={item.icon}
-            path={item.path}
-          />
+            to={item.path}
+            end={item.path === '/dashboard'} 
+            className={({ isActive }) =>
+              `
+              relative w-11 h-11 flex items-center justify-center rounded-xl transition-all duration-200
+              ${
+                isActive
+                  ? 'bg-gradient-to-br from-slate-700 to-slate-900 shadow-lg text-white'
+                  : 'text-slate-400 hover:bg-white/10 hover:text-white'
+              }
+              `
+            }
+          >
+            <item.icon className="w-5 h-5" />
+          </NavLink>
         ))}
       </nav>
-
+  
       {/* Bottom Section */}
       <div className="flex flex-col items-center gap-2 mt-auto">
         <div className="w-8 h-px bg-white/10 mb-2" />
