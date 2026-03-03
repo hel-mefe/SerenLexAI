@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { FileText, PlayCircle } from 'lucide-react'
 import { SeverityBadge } from '../badges/SeverityBadge'
+import { Link } from 'react-router-dom'
 
 type Analysis = {
   title: string
@@ -43,9 +44,11 @@ export function RecentAnalysesCard() {
           Recent Analyses
         </h2>
 
-        <button className="text-xs font-semibold text-slate-500 hover:text-slate-800 transition-colors">
-          See all →
-        </button>
+        <Link to='/dashboard/analyses' className='cursor-pointer'>
+            <button className="text-xs cursor-pointer font-semibold text-slate-500 hover:text-slate-800 transition-colors">
+            See all →
+            </button>
+        </Link>
       </div>
 
       <div className="space-y-2">
