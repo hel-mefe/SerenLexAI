@@ -5,27 +5,29 @@ import { PrimaryButton } from './PrimaryButton'
 import { AuthDivider } from './AuthDivider'
 import { authStorage } from '@/lib/auth.storage'
 import { useNavigate } from 'react-router-dom'
+import { ASSESSMENT_CREDENTIALS } from '@/config'
 
 export function SignInForm() {
-    const navigate = useNavigate() ;
+  const navigate = useNavigate()
 
-    const form = useForm({
+  const form = useForm({
     defaultValues: {
-        email: '',
-        password: '',
+      email: '',
+      password: '',
     },
     onSubmit: async ({ value }) => {
-        if (
-            value.email === 'Muhammad' &&
-            value.password === 'Muhammad'
-        ) {
-            authStorage.login()
-            navigate('/dashboard/overview')
-        } else {
-            alert('Invalid credentials')
-        }
-        }
-    })
+      const isValid =
+        value.email === ASSESSMENT_CREDENTIALS.username &&
+        value.password === ASSESSMENT_CREDENTIALS.password
+
+      if (isValid) {
+        authStorage.login()
+        navigate('/dashboard')
+      } else {
+        alert('Invalid credentials')
+      }
+    },
+  })
 
   return (
     <div className="flex-1 flex items-center justify-center px-10 pb-6">
@@ -45,9 +47,7 @@ export function SignInForm() {
             name="email"
             validators={{
               onChange: ({ value }) =>
-                !value
-                  ? 'Email is required'
-                  : undefined,
+                !value ? 'Email is required' : undefined,
             }}
           >
             {(field) => (
@@ -68,14 +68,10 @@ export function SignInForm() {
                   : undefined,
             }}
           >
-            {(field) => (
-              <PasswordInput field={field} />
-            )}
+            {(field) => <PasswordInput field={field} />}
           </form.Field>
 
-          <PrimaryButton>
-            Sign In
-          </PrimaryButton>
+          <PrimaryButton>Sign In</PrimaryButton>
         </form>
 
         <AuthDivider />
