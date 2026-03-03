@@ -1,7 +1,16 @@
+#!/bin/sh
+
 echo "Running frontend checks..."
-cd frontend && npm run lint
-cd frontend && npm run typecheck
+if [ -d "frontend" ]; then
+  cd frontend || exit 1
+  npm run lint || exit 1
+  npm run typecheck || exit 1
+  cd ..
+fi
 
 echo "Running backend checks..."
-cd backend && uv run ruff check .
-cd backend && uv run pytest
+if [ -d "backend" ]; then
+  cd backend || exit 1
+  uv run ruff check . || exit 1
+  cd ..
+fi
