@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from pydantic_settings import BaseSettings
 
 
@@ -9,7 +11,9 @@ class Settings(BaseSettings):
     API_VERSION: str = "v1"
 
     class Config:
-        env_file = ".env"
+        # Resolve the .env file relative to the backend package root so that
+        # scripts can be executed from any working directory.
+        env_file = str(Path(__file__).resolve().parent.parent / ".env")
 
 
 settings = Settings()
