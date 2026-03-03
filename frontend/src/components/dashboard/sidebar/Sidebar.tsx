@@ -19,7 +19,7 @@ export function Sidebar() {
             key={item.key}
             icon={item.icon}
             path={item.path}
-            label={item.key}
+            label={item.tooltip}
             end={item.path === '/dashboard'}
           />
         ))}
@@ -34,7 +34,7 @@ export function Sidebar() {
             key={item.key}
             icon={item.icon}
             path={item.path}
-            label={item.key}
+            label={item.tooltip}
           />
         ))}
 

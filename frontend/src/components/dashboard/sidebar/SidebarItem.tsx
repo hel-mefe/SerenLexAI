@@ -10,11 +10,10 @@ type Props = {
   end?: boolean
 }
 
-export function SidebarItem({ icon: Icon, path, label, end }: Props) {
+export function SidebarItem({ icon: Icon, path, label, end = false }: Props) {
   const [hovered, setHovered] = useState(false)
   const [coords, setCoords] = useState({ top: 0, left: 0 })
   const ref = useRef<HTMLDivElement>(null)
-  const tooltipLabel = label ?? path.replace('/', '') ?? 'home'
 
   const handleMouseEnter = () => {
     if (ref.current) {
@@ -83,7 +82,7 @@ export function SidebarItem({ icon: Icon, path, label, end }: Props) {
                 style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent)' }}
               />
               <span className="text-[11px] font-medium tracking-wide text-slate-300/80 whitespace-nowrap capitalize">
-                {tooltipLabel}
+                {label}
               </span>
             </div>
             <div className="absolute top-1/2 -translate-y-1/2 -left-[5px] w-0 h-0 border-t-[5px] border-t-transparent border-b-[5px] border-b-transparent border-r-[5px] border-r-[rgba(8,10,18,0.97)]" />
