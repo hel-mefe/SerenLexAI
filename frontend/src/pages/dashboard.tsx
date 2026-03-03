@@ -9,6 +9,9 @@ import {
   Brain,
   FileChartColumn,
 } from 'lucide-react'
+import { RecentAnalysesCard } from '@/components/dashboard/cards/RecentAnalysesCard'
+import { OptimizeCard } from '@/components/dashboard/cards/OptimizeCard'
+import { ThisMonthCard } from '@/components/dashboard/cards/ThisMonthCard'
 
 export function DashboardPage() {
   return (
@@ -63,11 +66,16 @@ export function DashboardPage() {
 
           {/* Content Grid */}
           <div className="grid grid-cols-3 gap-6">
-            <div className="col-span-2">
+            <div className="col-span-2 flex flex-col gap-y-6">
               <RiskDistributionCard />
+              <RecentAnalysesCard />
             </div>
 
-            <CompletedTodayCard />
+            <div className='space-y-5'>
+                <CompletedTodayCard />
+                <OptimizeCard />
+                <ThisMonthCard />
+            </div>
           </div>
         </main>
       </div>
