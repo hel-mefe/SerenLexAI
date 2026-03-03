@@ -1,15 +1,28 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { motion } from 'framer-motion'
 
 import { NewAnalysisHeader } from '@/components/newanalysis/NewAnalysisHeader'
 import { AnalysisModeToggle } from '@/components/newanalysis/AnalaysisModeToggle'
 import { UploadDropzone } from '@/components/newanalysis/UploadDropZone'
 import { StartAnalysisButton } from '@/components/newanalysis/StartAnalysisButton'
+import { PasteTextInput } from '@/components/newanalysis/PasteTextInput'
 import { FeatureHighlights } from '@/components/newanalysis/FeatureHighlights'
 
+
 export function NewAnalysisPage() {
-  const [mode, setMode] = useState<'upload' | 'paste'>('upload')
+  const [mode, setMode] =
+    useState<'upload' | 'paste'>('upload')
+
   const [file, setFile] = useState<File | null>(null)
+  const [text, setText] = useState('')
+
+  const canAnalyze = useMemo(() => {
+    if (mode === 'upload') {
+      return !!file
+    }
+
+    return text.trim().length > 50
+  }, [mode, file, text])
 
   return (
     <motion.div
@@ -24,7 +37,11 @@ export function NewAnalysisPage() {
         <div className="max-w-3xl mx-auto">
           <AnalysisModeToggle
             mode={mode}
-            onChange={setMode}
+            onChange={(newMode) => {
+              setMode(newMode)
+              setFile(null)
+              setText('')
+            }}
           />
 
           {mode === 'upload' && (
@@ -34,7 +51,14 @@ export function NewAnalysisPage() {
             />
           )}
 
-          <StartAnalysisButton disabled={!file} />
+          {mode === 'paste' && (
+            <PasteTextInput
+              value={text}
+              onChange={setText}
+            />
+          )}
+
+          <StartAnalysisButton disabled={!canAnalyze} />
 
           <FeatureHighlights />
         </div>
