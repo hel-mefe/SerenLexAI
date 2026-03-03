@@ -3,6 +3,7 @@ import { PublicLayout } from './PublicLayout'
 import { DashboardLayout } from '@/components/layouts/DashboardLayout'
 import { ProtectedRoute } from './ProtectedRoute'
 import SignInPage from '@/pages/signin'
+import { DashboardPage } from '@/pages/dashboard'
 
 // import OverviewPage from '@/pages/dashboard/OverviewPage'
 
@@ -24,7 +25,7 @@ export function AppRouter() {
         path="/dashboard"
         element={
           <ProtectedRoute>
-            <DashboardLayout />
+            <DashboardPage />
           </ProtectedRoute>
         }
       >

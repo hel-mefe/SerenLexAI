@@ -81,6 +81,25 @@
     );
   }
 
+  .bg-sidebar-gradient {
+    background: linear-gradient(
+      180deg,
+      #1a1f2e 0%,
+      #141824 60%,
+      #0f1320 100%
+    );
+  }
+
+  .bg-dashboard-gradient {
+    background: linear-gradient(
+      135deg,
+      #f0f2f5 0%,
+      #e8eaf0 40%,
+      #eef0f5 100%
+    );
+  }
+
+
   .glass-dark {
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(12px);

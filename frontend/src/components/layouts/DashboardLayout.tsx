@@ -1,12 +1,11 @@
-import { Outlet } from 'react-router-dom'
+type Props = {
+  children: React.ReactNode
+}
 
-export function DashboardLayout() {
+export function DashboardLayout({ children }: Props) {
   return (
-    <div className="min-h-screen bg-surface flex">
-      {/* Sidebar will go here later */}
-      <div className="flex-1 p-8">
-        <Outlet />
-      </div>
+    <div className="min-h-screen flex bg-gradient-to-br from-neutral-100 via-neutral-200 to-neutral-100">
+      {children}
     </div>
   )
 }
