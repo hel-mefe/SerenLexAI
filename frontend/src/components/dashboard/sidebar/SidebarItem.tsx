@@ -78,7 +78,7 @@ export function SidebarItem({ icon: Icon, path, label, end = false }: Props) {
                 style={{ background: 'linear-gradient(90deg, transparent, rgba(99,102,241,0.2), transparent)' }}
               />
               <div
-                className="absolute inset-x-0 bottom-0 h-px rounded-full"
+                className="absolute inset-x-0 bottom-0 h-px rounded-4xl"
                 style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent)' }}
               />
               <span className="text-[11px] font-medium tracking-wide text-slate-300/80 whitespace-nowrap capitalize">
