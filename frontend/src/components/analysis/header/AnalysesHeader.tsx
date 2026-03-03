@@ -18,7 +18,7 @@ export function AnalysesHeader({ total }: Props) {
       </div>
 
       <Link
-        to="/upload"
+        to="/dashboard/analyses/new"
         className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white bg-gradient-to-br from-[#1a1f2e] to-[#2d3550] hover:shadow-lg transition-all"
       >
         <Plus className="w-4 h-4" />
