@@ -1,22 +1,54 @@
-import { DashboardLayout } from '@/components/layouts/DashboardLayout'
 import { Sidebar } from '@/components/dashboard/sidebar/Sidebar'
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader'
+import { ActionCard } from '@/components/dashboard/cards/ActionCard'
+import { RiskDistributionCard } from '@/components/dashboard/cards/RiskDistributionCard'
+import { CompletedTodayCard } from '@/components/dashboard/cards/CompletedTodayCard'
+
+import {
+  UploadCloud,
+  Brain,
+  FileChartColumn,
+} from 'lucide-react'
 
 export function DashboardPage() {
   return (
-    <DashboardLayout>
+    <div className="min-h-screen flex bg-dashboard-gradient">
       <Sidebar />
 
       <div className="flex-1 flex flex-col min-w-0">
         <DashboardHeader />
 
-        <main className="flex-1 p-8 overflow-auto">
-          {/* We will insert reusable cards here next */}
-          <div className="text-slate-600">
-            Dashboard content goes here...
+        <main className="flex-1 p-8 overflow-auto space-y-8">
+          {/* Action Cards */}
+          <div className="grid grid-cols-3 gap-5">
+            <ActionCard
+              title="Analyze Contract"
+              description="Upload PDF or paste text"
+              icon={UploadCloud}
+              variant="primary"
+            />
+            <ActionCard
+              title="Risk Analyzer"
+              description="Detailed clause breakdown"
+              icon={Brain}
+            />
+            <ActionCard
+              title="Export Report"
+              description="Generate PDF summaries"
+              icon={FileChartColumn}
+            />
+          </div>
+
+          {/* Content Grid */}
+          <div className="grid grid-cols-3 gap-6">
+            <div className="col-span-2">
+              <RiskDistributionCard />
+            </div>
+
+            <CompletedTodayCard />
           </div>
         </main>
       </div>
-    </DashboardLayout>
+    </div>
   )
 }

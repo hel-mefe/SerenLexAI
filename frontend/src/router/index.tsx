@@ -28,17 +28,8 @@ export function AppRouter() {
           </ProtectedRoute>
         }
       >
-        {/* <Route
-          path="overview"
-          element={<OverviewPage />}
-        /> */}
-      </Route>
 
-      {/* Redirect root
-      <Route
-        path="/"
-        element={<Navigate to="/login" replace />}
-      /> */}
+      </Route>
 
       {/* Fallback */}
       <Route
