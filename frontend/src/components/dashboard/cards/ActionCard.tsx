@@ -1,6 +1,9 @@
+import { motion } from 'framer-motion'
 import type { LucideIcon } from 'lucide-react'
 import { ArrowUpRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
+
+const MotionLink = motion(Link)
 
 type Props = {
   title: string
@@ -8,6 +11,7 @@ type Props = {
   icon: LucideIcon
   to?: string
   variant?: 'primary' | 'secondary'
+  delay?: number
 }
 
 export function ActionCard({
@@ -16,15 +20,23 @@ export function ActionCard({
   icon: Icon,
   to = '#',
   variant = 'secondary',
+  delay = 0,
 }: Props) {
   const isPrimary = variant === 'primary'
 
   return (
-    <Link
+    <MotionLink
       to={to}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.03,
+        delay,
+        ease: 'easeOut',
+      }}
+      whileHover={{ y: -4 }}
       className={`
-        relative overflow-hidden p-6 rounded-2xl group transition-all
-        hover:-translate-y-1
+        relative overflow-hidden p-6 rounded-2xl group transition-all duration-300
         ${isPrimary
           ? 'text-white bg-gradient-to-br from-[#1a1f2e] to-[#2d3550] shadow-xl'
           : 'bg-white/80 backdrop-blur border border-black/5 hover:shadow-lg'
@@ -34,8 +46,7 @@ export function ActionCard({
       <div className="flex items-center justify-between mb-5">
         <div
           className={`
-            w-10 h-10 flex items-center justify-center rounded-xl
-            ${isPrimary ? 'bg-white/10' : 'bg-slate-100'}
+            w-10 h-10 flex items-center justify-center rounded-xl bg-none
           `}
         >
           <Icon
@@ -67,6 +78,6 @@ export function ActionCard({
       >
         {description}
       </p>
-    </Link>
+    </MotionLink>
   )
 }

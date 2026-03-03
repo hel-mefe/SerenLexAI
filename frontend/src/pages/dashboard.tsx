@@ -20,24 +20,29 @@ export function DashboardPage() {
 
         <main className="flex-1 p-8 overflow-auto space-y-8">
           {/* Action Cards */}
-          <div className="grid grid-cols-3 gap-5">
+            <div className="grid grid-cols-3 gap-5 relative z-0">
             <ActionCard
-              title="Analyze Contract"
-              description="Upload PDF or paste text"
-              icon={UploadCloud}
-              variant="primary"
+                title="Analyze Contract"
+                description="Upload PDF or paste text"
+                icon={UploadCloud}
+                variant="primary"
+                delay={0}
             />
+
             <ActionCard
-              title="Risk Analyzer"
-              description="Detailed clause breakdown"
-              icon={Brain}
+                title="Risk Analyzer"
+                description="Detailed clause breakdown"
+                icon={Brain}
+                delay={0.1}
             />
+
             <ActionCard
-              title="Export Report"
-              description="Generate PDF summaries"
-              icon={FileChartColumn}
+                title="Export Report"
+                description="Generate PDF summaries"
+                icon={FileChartColumn}
+                delay={0.2}
             />
-          </div>
+            </div>
 
           {/* Content Grid */}
           <div className="grid grid-cols-3 gap-6">

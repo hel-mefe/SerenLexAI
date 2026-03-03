@@ -99,6 +99,28 @@
     );
   }
 
+  .bg-animated-primary {
+    background: linear-gradient(
+      135deg,
+      #1a1f2e,
+      #2d3550,
+      #1a1f2e
+    );
+    background-size: 200% 200%;
+    animation: gradientShift 8s ease infinite;
+  }
+
+  @keyframes gradientShift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
 
   .glass-dark {
     background: rgba(255, 255, 255, 0.05);
