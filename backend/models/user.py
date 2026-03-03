@@ -28,3 +28,4 @@ class User(Base, TimestampMixin):
     )
 
     analyses = relationship("Analysis", back_populates="user")
+    actions = relationship("Action", back_populates="user")

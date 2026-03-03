@@ -14,6 +14,7 @@ dependencies = [
     "openai",
     "pdfplumber",
     "pgvector",
+    "psycopg2>=2.9.11",
     "psycopg[binary]",
     "pydantic-settings",
     "python-dotenv",

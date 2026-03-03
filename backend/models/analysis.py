@@ -42,3 +42,8 @@ class Analysis(Base, TimestampMixin):
         back_populates="analysis",
         cascade="all, delete-orphan",
     )
+    actions = relationship(
+        "Action",
+        back_populates="analysis",
+        cascade="all, delete-orphan",
+    )
