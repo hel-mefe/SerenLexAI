@@ -1,0 +1,59 @@
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+
+import type {
+  AnalysisFilter,
+  AnalysisId,
+} from '@/types/analysis'
+import type { AnalysisCreateDto, AnalysisDetail } from './dtos'
+import { analysesKeys } from './keys'
+import {
+  createAnalysis,
+  fetchAnalyses,
+  fetchAnalysisDetail,
+} from './api'
+
+export function useAnalysesList(options?: {
+  search?: string | undefined
+  filter?: AnalysisFilter | undefined
+  page?: number | undefined
+  pageSize?: number | undefined
+}) {
+  const { search, filter, page, pageSize } = options ?? {}
+
+  return useQuery({
+    queryKey: analysesKeys.list({ search, filter }),
+    queryFn: () =>
+      fetchAnalyses({
+        search,
+        filter,
+        page,
+        pageSize,
+      }),
+  })
+}
+
+export function useAnalysisDetail(id: AnalysisId | undefined) {
+  return useQuery<AnalysisDetail, Error>({
+    queryKey: analysesKeys.detail(id),
+    queryFn: () => {
+      if (!id) {
+        throw new Error('Analysis id is required')
+      }
+      return fetchAnalysisDetail(id)
+    },
+    enabled: Boolean(id),
+  })
+}
+
+export function useCreateAnalysis() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (payload: AnalysisCreateDto) => createAnalysis(payload),
+    onSuccess: () => {
+      // Refresh analysis lists on successful creation
+      queryClient.invalidateQueries({ queryKey: analysesKeys.all })
+    },
+  })
+}
+
