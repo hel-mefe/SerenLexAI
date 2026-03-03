@@ -18,7 +18,7 @@ export interface SidebarItem {
 export const SIDEBAR_ITEMS: SidebarItem[] = [
   { icon: Home, path: '/dashboard', key: 'home', tooltip: 'Home' },
   { icon: FileText, path: '/dashboard/analyses', key: 'analyses', tooltip: 'Analyses' },
-  { icon: UploadCloud, path: '/dashboard/upload', key: 'upload', tooltip: 'Upload' },
+  { icon: UploadCloud, path: '/dashboard/analyses/new', key: 'Contract', tooltip: 'Contract' },
   { icon: History, path: '/dashboard/history', key: 'history', tooltip: 'History' },
 ]
 
