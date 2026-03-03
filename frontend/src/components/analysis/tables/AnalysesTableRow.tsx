@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { RiskBadge } from '@/components/analysis/badges/RiskBadge'
 import type { AnalysisItem } from '@/types/analysis'
+import { Link } from 'react-router-dom'
 
 type Props = {
   item: AnalysisItem
@@ -12,7 +13,7 @@ export function AnalysesTableRow({ item }: Props) {
   return (
     <tr
       onClick={() =>
-        navigate(`/analysis/${item.id}`)
+        navigate(`/dashboard/analyses/${item.id}`)
       }
       className="border-b border-slate-100 hover:bg-slate-50 transition-colors group cursor-pointer"
     >
@@ -37,9 +38,11 @@ export function AnalysesTableRow({ item }: Props) {
       </td>
 
       <td className="px-6 py-4 text-right">
-        <button className="px-4 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 opacity-0 group-hover:opacity-100 transition-all">
-          View
-        </button>
+        <Link className='cursor-pointer' to='/dashboard/analyses/1'>
+            <button className="px-4 py-1.5 cursor-pointer rounded-lg text-xs font-semibold bg-slate-100 opacity-0 group-hover:opacity-100 transition-all">
+            View
+            </button>
+        </Link>
       </td>
     </tr>
   )
