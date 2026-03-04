@@ -8,9 +8,10 @@ type Props = {
   path: string
   label?: string
   end?: boolean
+  onClick?: () => void
 }
 
-export function SidebarItem({ icon: Icon, path, label, end = false }: Props) {
+export function SidebarItem({ icon: Icon, path, label, end = false, onClick }: Props) {
   const [hovered, setHovered] = useState(false)
   const [coords, setCoords] = useState({ top: 0, left: 0 })
   const ref = useRef<HTMLDivElement>(null)
@@ -30,7 +31,18 @@ export function SidebarItem({ icon: Icon, path, label, end = false }: Props) {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={() => setHovered(false)}
     >
-      <NavLink to={path} end={end}>
+      <NavLink
+        to={path}
+        end={end}
+        onClick={
+          onClick
+            ? (event) => {
+                event.preventDefault()
+                onClick()
+              }
+            : undefined
+        }
+      >
         {({ isActive }) => (
           <div
             className="w-11 h-11 flex items-center justify-center rounded-xl transition-all duration-200"

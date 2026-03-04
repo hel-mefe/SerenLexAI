@@ -44,14 +44,12 @@ export function Sidebar() {
           />
         ))}
 
-        <button
-          type="button"
+        <SidebarItem
+          icon={LogOut}
+          path="#"
+          label="log out"
           onClick={logout}
-          aria-label="Log out"
-          className="w-11 h-11 flex items-center justify-center rounded-xl mt-1 text-slate-400 hover:text-white hover:bg-white/10 border border-transparent hover:border-white/20 transition-all"
-        >
-          <LogOut className="w-4 h-4" />
-        </button>
+        />
 
         {/* User Avatar */}
         <div className="w-11 h-11 mt-3 rounded-xl bg-gradient-to-br from-slate-600 to-slate-800 flex items-center justify-center text-white text-sm font-bold border border-white/10">
