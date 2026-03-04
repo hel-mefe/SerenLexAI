@@ -8,8 +8,8 @@ import { motion } from 'framer-motion'
 
 import {
   UploadCloud,
-  Brain,
-  FileChartColumn,
+  FileText,
+  History,
 } from 'lucide-react'
 
 export function DashboardPage() {
@@ -42,16 +42,18 @@ export function DashboardPage() {
         />
 
         <ActionCard
-          title="Risk Analyzer"
-          description="Detailed clause breakdown"
-          icon={Brain}
+          title="View Analyses"
+          description="See all completed and in-progress analyses"
+          icon={FileText}
+          to="/dashboard/analyses"
           delay={0.1}
         />
 
         <ActionCard
-          title="Export Report"
-          description="Generate PDF summaries"
-          icon={FileChartColumn}
+          title="Activity History"
+          description="Review uploads, analyses, and system actions"
+          icon={History}
+          to="/dashboard/history"
           delay={0.2}
         />
       </div>
