@@ -44,10 +44,17 @@ services:
     restart: always
     env_file:
       - ../env/backend.env
+    volumes:
+      # Hot reload API code without rebuilding the image
+      - ../backend:/app:cached
     depends_on:
       - postgres
       - redis
       - minio
+    command:
+      - sh
+      - -c
+      - alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000 --reload
     ports:
       - "8000:8000"
     networks:
@@ -61,6 +68,9 @@ services:
     restart: always
     env_file:
       - ../env/backend.env
+    volumes:
+      # Mount backend so task code changes are picked up after restart
+      - ../backend:/app:cached
     depends_on:
       - postgres
       - redis
@@ -75,6 +85,9 @@ services:
     restart: always
     env_file:
       - ../env/ai.env
+    volumes:
+      # Hot reload AI code without rebuilding the image
+      - ../ai:/app:cached
     depends_on:
       - postgres
       - redis
