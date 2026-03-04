@@ -78,10 +78,9 @@ export async function fetchAnalysisDetail(
 }
 
 /**
- * Creates a new analysis resource on the backend.
+ * Creates a new analysis from pasted text.
  *
- * @param payload Payload describing the source of the analysis such as title,
- * source type and optional raw text.
+ * @param payload Payload with title, source_type 'paste', and raw_text.
  * @returns A promise that resolves to the created {@link AnalysisDetail}.
  */
 export async function createAnalysis(
@@ -90,6 +89,35 @@ export async function createAnalysis(
   const { data } = await apiClient.post<AnalysisDetailDto>(
     '/analyses',
     payload,
+  )
+  return mapAnalysisDetailDto(data)
+}
+
+/**
+ * Creates a new analysis from an uploaded PDF (max 20 pages).
+ *
+ * @param file PDF file to upload.
+ * @param title Optional title; defaults to file name.
+ * @returns A promise that resolves to the created {@link AnalysisDetail}.
+ * @throws Axios error with 400 if document exceeds 20 pages or invalid type,
+ * 413 if file too large, 422 if extraction fails.
+ */
+export async function createAnalysisFromFile(
+  file: File,
+  title: string,
+): Promise<AnalysisDetail> {
+  const formData = new FormData()
+  formData.append('file', file)
+  formData.append('title', title || file.name || 'Uploaded document')
+
+  const { data } = await apiClient.post<AnalysisDetailDto>(
+    '/analyses/upload',
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    },
   )
   return mapAnalysisDetailDto(data)
 }

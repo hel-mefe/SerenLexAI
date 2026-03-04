@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import io
 import uuid
 from typing import Optional
 
+import pdfplumber
 from sqlalchemy.orm import Session
 
 from models.analysis import Analysis
@@ -17,6 +19,24 @@ from schemas.analysis import (
     AnalysisListResponse,
 )
 from schemas.actions import ActionCreate
+
+
+class DocumentTooLongError(ValueError):
+    """Raised when the document exceeds the maximum allowed page count."""
+
+    def __init__(self, pages: int, max_pages: int) -> None:
+        self.pages = pages
+        self.max_pages = max_pages
+        super().__init__(
+            f"Document exceeds maximum allowed size ({max_pages} pages). "
+            f"Your document has {pages} pages."
+        )
+
+
+class DocumentExtractionError(ValueError):
+    """Raised when text extraction from the document fails."""
+
+    pass
 
 
 class AnalysisService:
@@ -125,6 +145,42 @@ class AnalysisService:
         self._db.commit()
 
         return self.get_analysis(analysis.id)
+
+    def create_analysis_from_upload(
+        self,
+        file_content: bytes,
+        filename: str,
+        title: str,
+        max_pages: int,
+    ) -> AnalysisDetail:
+        """
+        Create an analysis from an uploaded PDF. Validates page count and
+        extracts text. Raises DocumentTooLongError or DocumentExtractionError
+        on validation failure.
+        """
+        with pdfplumber.open(io.BytesIO(file_content)) as pdf:
+            num_pages = len(pdf.pages)
+            if num_pages > max_pages:
+                raise DocumentTooLongError(num_pages, max_pages)
+            try:
+                parts: list[str] = []
+                for page in pdf.pages:
+                    text = page.extract_text()
+                    if text:
+                        parts.append(text)
+                raw_text = "\n\n".join(parts).strip() if parts else ""
+            except Exception as e:
+                raise DocumentExtractionError(
+                    f"Could not extract text from the document: {e!s}"
+                ) from e
+
+        payload = AnalysisCreate(
+            title=title or filename or "Uploaded document",
+            original_filename=filename,
+            source_type="upload",
+            raw_text=raw_text or None,
+        )
+        return self.create_analysis(payload)
 
     def _log_action(self, payload: ActionCreate) -> Action:
         action = Action(

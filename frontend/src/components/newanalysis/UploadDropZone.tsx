@@ -20,13 +20,13 @@ export function UploadDropzone({
       </h3>
 
       <p className="text-sm text-slate-500 mb-6">
-        PDF files up to 20 pages · Encrypted in transit
+        PDF only, up to 20 pages · Encrypted in transit
       </p>
 
       <label>
         <input
           type="file"
-          accept=".pdf,.doc,.docx,.txt"
+          accept=".pdf,application/pdf"
           className="hidden"
           onChange={(e) => {
             if (e.target.files?.[0]) {

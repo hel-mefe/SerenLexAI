@@ -18,6 +18,7 @@ dependencies = [
     "psycopg[binary]",
     "pydantic-settings",
     "python-dotenv",
+    "python-multipart>=0.0.22",
     "redis",
     "sqlalchemy",
     "structlog>=25.5.0",

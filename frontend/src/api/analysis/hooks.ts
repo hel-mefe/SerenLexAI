@@ -6,8 +6,10 @@ import type {
 } from '@/types/analysis'
 import type { AnalysisCreateDto, AnalysisDetail } from './dtos'
 import { analysesKeys } from './keys'
+import { historyKeys } from '@/api/history/keys'
 import {
   createAnalysis,
+  createAnalysisFromFile,
   fetchAnalyses,
   fetchAnalysisDetail,
 } from './api'
@@ -51,8 +53,21 @@ export function useCreateAnalysis() {
   return useMutation({
     mutationFn: (payload: AnalysisCreateDto) => createAnalysis(payload),
     onSuccess: () => {
-      // Refresh analysis lists on successful creation
       queryClient.invalidateQueries({ queryKey: analysesKeys.all })
+      queryClient.invalidateQueries({ queryKey: historyKeys.all })
+    },
+  })
+}
+
+export function useCreateAnalysisFromFile() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ file, title }: { file: File; title: string }) =>
+      createAnalysisFromFile(file, title),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: analysesKeys.all })
+      queryClient.invalidateQueries({ queryKey: historyKeys.all })
     },
   })
 }

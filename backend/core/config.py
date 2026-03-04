@@ -10,6 +10,10 @@ class Settings(BaseSettings):
     API_PREFIX: str = "/api"
     API_VERSION: str = "v1"
 
+    # Document upload limits
+    UPLOAD_MAX_PAGES: int = 20
+    UPLOAD_MAX_FILE_SIZE_MB: int = 10
+
     class Config:
         # Resolve the .env file relative to the backend package root so that
         # scripts can be executed from any working directory.
