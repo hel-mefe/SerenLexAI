@@ -5,20 +5,20 @@ export function NewAnalysisHeader() {
   const navigate = useNavigate()
 
   return (
-    <header className="sticky rounded-3xl top-0 z-20 flex items-center justify-between px-8 py-4 bg-white/70 backdrop-blur-xl border-b border-black/5">
+    <header className="sticky top-0 z-20 rounded-3xl bg-auth-gradient flex items-center justify-between px-8 py-4 backdrop-blur-xl border-b border-black/5">
       <div className="flex items-center gap-3">
         <button
           onClick={() => navigate('/dashboard')}
-          className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-500 hover:bg-slate-100 transition-colors"
+          className="w-9 h-9 flex items-center justify-center rounded-xl text-white/70 hover:bg-white/10 hover:text-white transition-all"
         >
           <ArrowLeft className="w-4 h-4" />
         </button>
 
         <div>
-          <h1 className="text-xl font-bold text-slate-900">
+          <h1 className="text-xl font-bold text-white">
             New Analysis
           </h1>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <p className="text-xs text-slate-300 mt-0.5">
             Upload a contract to get started
           </p>
         </div>

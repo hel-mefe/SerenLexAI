@@ -1,0 +1,17 @@
+langgraph
+openai
+langchain-core
+langchain-openai
+sqlalchemy[asyncio]
+asyncpg
+pydantic>=2.0.0
+python-dotenv
+pdfplumber
+python-docx
+pytesseract
+Pillow
+psycopg[binary]
+pgvector
+mcp
+celery
+redis

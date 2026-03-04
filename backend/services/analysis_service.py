@@ -7,6 +7,7 @@ from typing import Optional
 import pdfplumber
 from sqlalchemy.orm import Session
 
+from ai.tasks import enqueue_contract_analysis
 from models.analysis import Analysis
 from models.actions import Action
 from repositories.analysis_repository import AnalysisRepository
@@ -87,6 +88,7 @@ class AnalysisService:
                     risk=a.overall_risk,
                     clauses=clauses_count,
                     score=a.risk_score or 0,
+                    status=a.status,
                 )
             )
 
@@ -143,6 +145,9 @@ class AnalysisService:
         self._log_action(action_payload)
 
         self._db.commit()
+
+        # Fire-and-forget AI analysis via Redis/Celery
+        enqueue_contract_analysis(analysis)
 
         return self.get_analysis(analysis.id)
 

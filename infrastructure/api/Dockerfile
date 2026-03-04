@@ -2,14 +2,20 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-COPY ../backend/requirements.txt .
+# System dependencies required for psycopg2 and Postgres client libraries
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends build-essential libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN pip install --no-cache-dir -r requirements.txt
+# Install uv to resolve dependencies from pyproject.toml / uv.lock
+RUN pip install --no-cache-dir uv
 
-COPY ../backend .
+# Copy project metadata and install dependencies into the system environment
+COPY pyproject.toml uv.lock ./
+RUN uv pip install --system .
 
-COPY ../infrastructure/scripts/entrypoint.sh /entrypoint.sh
+# Copy backend source code
+COPY . .
 
-RUN chmod +x /entrypoint.sh
-
-CMD ["/entrypoint.sh"]
+# Start the FastAPI application
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

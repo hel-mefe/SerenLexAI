@@ -46,6 +46,7 @@ class AnalysisListItem(BaseModel):
     risk: Optional[RiskLevel] = None
     clauses: int
     score: int
+    status: str
 
 
 class AnalysisDetail(BaseModel):
