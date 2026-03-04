@@ -7,5 +7,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY app ./app
 
-CMD ["celery", "-A", "app.contract_intelligence.worker.celery_app", "worker", "--loglevel=info"]
+CMD ["celery", "-A", "app.contract_intelligence.worker.celery_app:celery_app", "worker", "--loglevel=info"]
 
