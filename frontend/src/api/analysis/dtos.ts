@@ -21,6 +21,7 @@ export interface AnalysisListItemDto {
   risk: SeverityLevel | null
   clauses: number
   score: number
+  status: string
 }
 
 export type AnalysisListResponseDto =
@@ -77,6 +78,14 @@ export const mapAnalysisListItemDto: DtoMapper<
     minute: '2-digit',
   })
 
+  const rawStatus = dto.status ?? 'pending'
+  const status =
+    rawStatus === 'completed'
+      ? 'completed'
+      : rawStatus === 'failed'
+        ? 'failed'
+        : 'pending'
+
   return {
     id: dto.id as AnalysisId,
     name: dto.name,
@@ -85,6 +94,7 @@ export const mapAnalysisListItemDto: DtoMapper<
     risk: dto.risk ?? 'Low',
     clauses: dto.clauses,
     score: dto.score,
+    status,
   }
 }
 

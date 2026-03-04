@@ -1,13 +1,16 @@
 import { Search } from 'lucide-react'
 import type { SeverityLevel } from '@/types/analysis'
 
-type FilterValue = 'All' | SeverityLevel
+type SeverityFilterValue = 'All' | SeverityLevel
+type StatusFilterValue = 'All' | 'completed' | 'pending' | 'failed'
 
 type Props = {
   search: string
   onSearchChange: (value: string) => void
-  filter: FilterValue
-  onFilterChange: (value: FilterValue) => void
+  filter: SeverityFilterValue
+  onFilterChange: (value: SeverityFilterValue) => void
+  statusFilter?: StatusFilterValue
+  onStatusFilterChange?: (value: StatusFilterValue) => void
 }
 
 export function AnalysesFiltersBar({
@@ -15,19 +18,28 @@ export function AnalysesFiltersBar({
   onSearchChange,
   filter,
   onFilterChange,
+  statusFilter = 'All',
+  onStatusFilterChange,
 }: Props) {
-  const filters: FilterValue[] = [
+  const severityFilters: SeverityFilterValue[] = [
     'All',
     'High',
     'Medium',
     'Low',
   ]
 
+  const statusFilters: StatusFilterValue[] = [
+    'All',
+    'completed',
+    'pending',
+    'failed',
+  ]
+
   return (
     <div className="rounded-2xl p-5 mb-6 bg-white/85 backdrop-blur border border-black/5">
-      <div className="flex items-center justify-between gap-4">
-        {/* Search */}
-        <div className="flex-1 max-w-md relative">
+      {/* Search row */}
+      <div className="flex items-center gap-4 mb-3">
+        <div className="flex-1 relative">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
           <input
             value={search}
@@ -35,29 +47,70 @@ export function AnalysesFiltersBar({
               onSearchChange(e.target.value)
             }
             placeholder="Search contracts..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 transition-all"
+            className="w-full max-w-[460px] pl-10 pr-4 py-2.5 rounded-xl text-sm bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 transition-all"
           />
         </div>
+      </div>
 
-        {/* Severity Filter */}
+      {/* Filters row: Severity + Status on left */}
+      <div className="flex flex-wrap items-center gap-8 mt-6">
         <div className="flex items-center gap-2">
-          {filters.map((item) => {
-            const active = filter === item
-            return (
-              <button
-                key={item}
-                onClick={() => onFilterChange(item)}
-                className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
-                  active
+          <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+            Severity
+          </span>
+          <div className="flex items-center gap-2">
+            {severityFilters.map((item) => {
+              const active = filter === item
+              return (
+                <button
+                  key={item}
+                  onClick={() => onFilterChange(item)}
+                  className={`px-3 py-1.5 rounded-xl text-[11px] font-semibold transition-all ${
+                    active
                     ? 'bg-slate-900 text-white shadow-lg'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                }`}
-              >
-                {item}
-              </button>
-            )
-          })}
+              }`}
+                >
+                  {item}
+                </button>
+              )
+            })}
+          </div>
         </div>
+
+        {onStatusFilterChange && (
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+              Status
+            </span>
+            <div className="flex items-center gap-2">
+              {statusFilters.map((item) => {
+                const active = statusFilter === item
+                const label =
+                  item === 'completed'
+                    ? 'Done'
+                    : item === 'pending'
+                      ? 'Processing'
+                      : item === 'failed'
+                        ? 'Failed'
+                        : 'All'
+                return (
+                  <button
+                    key={item}
+                    onClick={() => onStatusFilterChange(item)}
+                    className={`px-3 py-1.5 rounded-xl text-[11px] font-semibold transition-all ${
+                      active
+                        ? 'bg-slate-900 text-white shadow-lg'
+                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    }`}
+                  >
+                    {label}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

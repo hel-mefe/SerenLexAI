@@ -11,16 +11,22 @@ export function AnalysesTable({ data }: Props) {
       <table className="w-full">
         <thead>
           <tr className="border-b border-slate-200">
-            {['Contract', 'Date', 'Risk', 'Clauses', 'Score', ''].map(
-              (col) => (
-                <th
-                  key={col}
-                  className="text-left px-6 py-4 text-xs font-bold text-slate-600 uppercase tracking-wide"
-                >
-                  {col}
-                </th>
-              )
-            )}
+            {[
+              'Contract',
+              'Date',
+              'Risk',
+              'Clauses',
+              'Score',
+              'Status',
+              '',
+            ].map((col) => (
+              <th
+                key={col}
+                className="text-left px-6 py-4 text-xs font-bold text-slate-600 uppercase tracking-wide"
+              >
+                {col}
+              </th>
+            ))}
           </tr>
         </thead>
 

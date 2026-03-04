@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 
 import { AnalysesHeader } from '@/components/analysis/header/AnalysesHeader'
@@ -6,7 +6,7 @@ import { AnalysesFiltersBar } from '@/components/analysis/filters/AnalysesFilter
 import { AnalysesTable } from '@/components/analysis/tables/AnalysesTable'
 import { Pagination } from '@/components/analysis/tables/Pagination'
 
-import type { SeverityLevel } from '@/types/analysis'
+import type { AnalysisItem, AnalysisStatus, SeverityLevel } from '@/types/analysis'
 import { useAnalysesList } from '@/api/analysis/hooks'
 
 type FilterValue = 'All' | SeverityLevel
@@ -16,6 +16,8 @@ const PAGE_SIZE = 10
 export function AnalysesPage() {
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState<FilterValue>('All')
+  const [statusFilter, setStatusFilter] =
+    useState<'All' | AnalysisStatus>('All')
   const [page, setPage] = useState(1)
 
   const {
@@ -30,8 +32,14 @@ export function AnalysesPage() {
     pageSize: PAGE_SIZE,
   })
 
-  const items = data?.items ?? []
-  const total = data?.total ?? 0
+  const items = (data?.items ?? []) as AnalysisItem[]
+
+  const filteredItems = useMemo(() => {
+    if (statusFilter === 'All') return items
+    return items.filter((item) => item.status === statusFilter)
+  }, [items, statusFilter])
+
+  const total = filteredItems.length
 
   return (
     <motion.div
@@ -48,6 +56,8 @@ export function AnalysesPage() {
           onSearchChange={setSearch}
           filter={filter}
           onFilterChange={setFilter}
+          statusFilter={statusFilter}
+          onStatusFilterChange={setStatusFilter}
         />
 
         {isLoading ? (
@@ -75,7 +85,7 @@ export function AnalysesPage() {
           </div>
         ) : (
           <>
-            <AnalysesTable data={items} />
+            <AnalysesTable data={filteredItems} />
             <Pagination page={page} onChange={setPage} />
           </>
         )}

@@ -2,6 +2,8 @@ export type SeverityLevel = 'High' | 'Medium' | 'Low'
 
 export type RiskLevel = SeverityLevel
 
+export type AnalysisStatus = 'pending' | 'completed' | 'failed'
+
 export type AnalysisId = string
 
 export interface AnalysisItem {
@@ -12,6 +14,7 @@ export interface AnalysisItem {
   risk: RiskLevel
   clauses: number
   score: number
+  status: AnalysisStatus
 }
 
 export interface AnalysisScoreBreakdown {
