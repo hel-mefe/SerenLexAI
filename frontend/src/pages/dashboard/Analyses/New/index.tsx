@@ -10,6 +10,8 @@ import { StartAnalysisButton } from '@/components/newanalysis/StartAnalysisButto
 import { PasteTextInput } from '@/components/newanalysis/PasteTextInput'
 import { FeatureHighlights } from '@/components/newanalysis/FeatureHighlights'
 import { useCreateAnalysis, useCreateAnalysisFromFile } from '@/api/analysis/hooks'
+import toast from 'react-hot-toast'
+import { toastAnalysisQueued } from '@/lib/toast'
 
 function getErrorMessage(error: unknown): string {
   if (isAxiosError(error) && error.response?.data?.detail) {
@@ -43,18 +45,18 @@ export function NewAnalysisPage() {
     const displayTitle = title.trim() || (mode === 'upload' && file ? file.name : '') || 'New analysis'
     try {
       if (mode === 'upload' && file) {
-        const result = await createUpload.mutateAsync({ file, title: displayTitle })
-        navigate(`/dashboard/analyses/${result.id}`)
+        await createUpload.mutateAsync({ file, title: displayTitle })
       } else {
-        const result = await createPaste.mutateAsync({
+        await createPaste.mutateAsync({
           title: displayTitle,
           source_type: 'paste',
           raw_text: text.trim(),
         })
-        navigate(`/dashboard/analyses/${result.id}`)
       }
-    } catch {
-      // Error is shown via errorMessage
+      navigate('/dashboard/analyses')
+      toastAnalysisQueued(displayTitle)
+    } catch (err) {
+      toast.error(getErrorMessage(err))
     }
   }
 
