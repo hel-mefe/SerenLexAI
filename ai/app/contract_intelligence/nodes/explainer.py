@@ -5,22 +5,23 @@ from typing import Any, Dict, List
 from langchain_openai import ChatOpenAI
 
 from app.contract_intelligence.config import get_settings
+from app.contract_intelligence.models.domain import NodeErrorModel
 from app.contract_intelligence.prompts.explainer import EXPLAINER_SYSTEM_PROMPT
 from app.contract_intelligence.state import ContractState
 
 
 async def explainer_node(state: ContractState) -> ContractState:
-    if state.get("fatal_error"):
+    if state.fatal_error:
         return state
 
-    errors = list(state.get("errors") or [])
+    errors: list[NodeErrorModel] = list(state.errors or [])
 
     summary_payload: Dict[str, Any] = {
-        "overall_risk_score": state.get("risk_score"),
-        "overall_risk_level": state.get("risk_level"),
-        "score_breakdown": state.get("score_breakdown"),
-        "classified_clauses": state.get("classified_clauses"),
-        "recommendations": state.get("recommendations"),
+        "overall_risk_score": state.risk_score,
+        "overall_risk_level": state.risk_level,
+        "score_breakdown": state.score_breakdown,
+        "classified_clauses": [c.model_dump() for c in (state.classified_clauses or [])],
+        "recommendations": [r.model_dump() for r in (state.recommendations or [])],
     }
 
     settings = get_settings()
@@ -46,17 +47,14 @@ async def explainer_node(state: ContractState) -> ContractState:
         )
     except Exception as exc:
         errors.append(
-            {
-                "node": "explainer",
-                "clause_id": None,
-                "error_type": "explainer_failed",
-                "message": str(exc),
-            }
+            NodeErrorModel(
+                node="explainer",
+                clause_id=None,
+                error_type="explainer_failed",
+                message=str(exc),
+            )
         )
         explanation_text = ""
 
-    new_state: ContractState = dict(state)
-    new_state["explanation"] = explanation_text
-    new_state["errors"] = errors
-    return new_state
+    return state.model_copy(update={"explanation": explanation_text, "errors": errors})
 

@@ -7,6 +7,7 @@ from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
 
 from app.contract_intelligence.config import get_settings
+from app.contract_intelligence.models.domain import ClassifiedClauseModel, NodeErrorModel
 from app.contract_intelligence.prompts.clause_detector import (
     CLAUSE_DETECTOR_SYSTEM_PROMPT,
 )
@@ -80,11 +81,19 @@ async def _detect_for_chunk(
 
 
 async def clause_detector_node(state: ContractState) -> ContractState:
-    if state.get("fatal_error"):
+    if state.fatal_error:
         return state
 
-    sections = state.get("sections") or state.get("normalized_chunks") or []
-    errors = list(state.get("errors") or [])
+    # Prefer section objects (from section_parser); otherwise fall back to chunks.
+    # clause_detector expects dict-like inputs, so we convert to plain dicts.
+    sections: list[dict[str, Any]]
+    if state.sections:
+        sections = [s.model_dump() for s in state.sections]
+    else:
+        chunks = state.normalized_chunks or state.chunks
+        sections = [c.model_dump() for c in (chunks or [])]
+
+    errors: list[NodeErrorModel] = list(state.errors or [])
 
     settings = get_settings()
     raw_llm = ChatOpenAI(
@@ -102,12 +111,12 @@ async def clause_detector_node(state: ContractState) -> ContractState:
                 return await _detect_for_chunk(llm, chunk)
             except Exception as exc:
                 errors.append(
-                    {
-                        "node": "clause_detector",
-                        "clause_id": chunk.get("id"),
-                        "error_type": "clause_detection_failed",
-                        "message": str(exc),
-                    }
+                    NodeErrorModel(
+                        node="clause_detector",
+                        clause_id=str(chunk.get("id") or ""),
+                        error_type="clause_detection_failed",
+                        message=str(exc),
+                    )
                 )
                 return None
 
@@ -115,9 +124,13 @@ async def clause_detector_node(state: ContractState) -> ContractState:
     results = await asyncio.gather(*tasks)
 
     clauses: List[Dict[str, Any]] = [r for r in results if r is not None]
+    clause_models = [ClassifiedClauseModel(**c) for c in clauses]
 
-    new_state: ContractState = dict(state)
-    new_state["clauses"] = clauses
-    new_state["errors"] = errors
-    return new_state
+    # Keep ContractState strongly typed; downstream nodes will convert as needed.
+    return state.model_copy(
+        update={
+            "clauses": clause_models,
+            "errors": errors,
+        }
+    )
 

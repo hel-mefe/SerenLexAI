@@ -8,6 +8,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.contract_intelligence.config import get_settings
+from app.contract_intelligence.models.domain import ClassifiedClauseModel, NodeErrorModel
 from app.contract_intelligence.prompts.risk_classifier import (
     RISK_CLASSIFIER_SYSTEM_PROMPT,
 )
@@ -109,14 +110,18 @@ async def risk_classifier_node_factory(
     llm = raw_llm.with_structured_output(RiskClassification)
 
     async def node(state: ContractState) -> ContractState:
-        if state.get("fatal_error"):
+        if state.fatal_error:
             return state
 
-        clauses = state.get("clauses") or []
-        errors = list(state.get("errors") or [])
+        clauses_models = state.clauses or []
+        clauses: list[Dict[str, Any]] = [
+            c.model_dump() if isinstance(c, ClassifiedClauseModel) else dict(c)  # type: ignore[arg-type]
+            for c in clauses_models
+        ]
+        errors: list[NodeErrorModel] = list(state.errors or [])
 
         # Basic contract-level context from metadata if provided.
-        metadata = state.get("metadata") or {}
+        metadata = state.metadata or {}
         contract_context: Dict[str, Any] = {
             "contract_value": metadata.get("contract_value"),
             "currency": metadata.get("currency"),
@@ -145,12 +150,12 @@ async def risk_classifier_node_factory(
                     )
                 except Exception as exc:
                     errors.append(
-                        {
-                            "node": "risk_classifier",
-                            "clause_id": clause.get("chunk_id"),
-                            "error_type": "risk_classification_failed",
-                            "message": str(exc),
-                        }
+                        NodeErrorModel(
+                            node="risk_classifier",
+                            clause_id=str(clause.get("chunk_id") or ""),
+                            error_type="risk_classification_failed",
+                            message=str(exc),
+                        )
                     )
                     return {
                         **clause,
@@ -163,10 +168,13 @@ async def risk_classifier_node_factory(
         tasks = [wrapped(c) for c in clauses]
         classified = await asyncio.gather(*tasks)
 
-        new_state: ContractState = dict(state)
-        new_state["classified_clauses"] = classified
-        new_state["errors"] = errors
-        return new_state
+        classified_models = [ClassifiedClauseModel(**c) for c in classified]
+        return state.model_copy(
+            update={
+                "classified_clauses": classified_models,
+                "errors": errors,
+            }
+        )
 
     return node
 
