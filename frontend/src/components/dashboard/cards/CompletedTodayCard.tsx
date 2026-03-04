@@ -1,16 +1,11 @@
 export function CompletedTodayCard() {
   return (
-    <div className="rounded-2xl p-6 bg-white/80 backdrop-blur border border-black/5">
-      <div className="flex items-center justify-between mb-1">
-        <h3 className="text-sm font-bold text-slate-900">
-          Completed Today
-        </h3>
-        <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
-          +10%
-        </span>
-      </div>
+    <div className="rounded-2xl p-6 bg-gradient-to-br from-brand-900 to-brand-700 text-white shadow-soft">
+      <h3 className="text-sm font-bold mb-1">
+        Contracts Analyzed
+      </h3>
 
-      <div className="text-4xl font-bold text-slate-900 mt-3 mb-5">
+      <div className="text-4xl font-bold mt-3 mb-5">
         46
       </div>
 
