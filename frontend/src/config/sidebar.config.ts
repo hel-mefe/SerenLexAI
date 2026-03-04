@@ -3,8 +3,6 @@ import {
   FileText,
   UploadCloud,
   History,
-  Settings,
-  RefreshCcw,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -22,7 +20,4 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
   { icon: History, path: '/dashboard/history', key: 'history', tooltip: 'History' },
 ]
 
-export const SIDEBAR_BOTTOM_ITEMS: SidebarItem[] = [
-  { icon: Settings, path: '/dashboard/settings', key: 'settings', tooltip: 'Settings' },
-  { icon: RefreshCcw, path: '/dashboard/refresh', key: 'refresh', tooltip: 'Sync' },
-]
+export const SIDEBAR_BOTTOM_ITEMS: SidebarItem[] = []
