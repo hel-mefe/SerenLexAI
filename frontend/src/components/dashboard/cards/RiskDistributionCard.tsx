@@ -1,70 +1,180 @@
+import { AlertTriangle, AlertCircle, ShieldCheck } from 'lucide-react'
+import { useAnalysesList } from '@/api/analysis/hooks'
+
 export function RiskDistributionCard() {
+  const { data, isLoading, isError } = useAnalysesList({
+    page: 1,
+    pageSize: 100,
+  })
+
+  const items = data?.items ?? []
+
+  const highCount = items.filter((item) => item.risk === 'High').length
+  const mediumCount = items.filter((item) => item.risk === 'Medium').length
+  const lowCount = items.filter((item) => item.risk === 'Low').length
+
+  const total = highCount + mediumCount + lowCount
+
+  if (isLoading) {
+    return (
+      <div className="rounded-2xl p-6 bg-white/80 backdrop-blur border border-black/5">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-base font-bold text-slate-900">
+            Risk Overview
+          </h2>
+        </div>
+
+        <div className="flex items-center justify-center py-8">
+          <div className="w-8 h-8 rounded-full border-2 border-slate-300 border-t-transparent animate-spin" />
+        </div>
+      </div>
+    )
+  }
+
+  if (isError || !total) {
+    return (
+      <div className="rounded-2xl p-6 bg-white/80 backdrop-blur border border-black/5">
+        <div className="flex items-center justify-between mb-1">
+          <h2 className="text-base font-bold text-slate-900">
+            Risk Overview
+          </h2>
+        </div>
+        <p className="text-xs text-slate-400 mt-3">
+          No risk data available yet. Run an analysis to see aggregated risk
+          levels.
+        </p>
+      </div>
+    )
+  }
+
   return (
     <div className="rounded-2xl p-6 bg-white/80 backdrop-blur border border-black/5">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-base font-bold text-slate-900">
-          Risk Distribution
-        </h2>
-
-        <div className="flex items-center gap-1 p-1 rounded-lg bg-slate-100">
-          <button className="px-3 py-1 text-xs font-semibold bg-white text-slate-800 rounded-md shadow-sm">
-            Week
-          </button>
-          <button className="px-3 py-1 text-xs text-slate-500 hover:text-slate-700 rounded-md">
-            Month
-          </button>
+      <div className="flex items-center justify-between mb-5">
+        <div>
+          <h2 className="text-base font-bold text-slate-900">
+            Risk Overview
+          </h2>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Aggregated across your recent analyses
+          </p>
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-3 mb-6">
-        <RiskStat color="red" value="8" label="High Risk" percent="17%" />
-        <RiskStat color="amber" value="15" label="Medium Risk" percent="33%" />
-        <RiskStat color="emerald" value="23" label="Low Risk" percent="50%" />
-      </div>
-
-      {/* Placeholder chart */}
-      <div className="h-40 flex items-end gap-2">
-        {[65, 45, 80, 55, 90, 70, 85].map((h, i) => (
-          <div key={i} className="flex-1 flex flex-col items-center gap-2">
-            <div
-              className="w-full rounded-t-lg bg-gradient-to-t from-[#1a1f2e] to-slate-500"
-              style={{ height: `${h}%` }}
-            />
-            <span className="text-xs text-slate-400">
-              {['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][i]}
-            </span>
-          </div>
-        ))}
+      <div className="grid grid-cols-3 gap-4">
+        <RiskLevelCard
+          tone="high"
+          label="High Risk"
+          count={highCount}
+          total={total}
+          icon={AlertTriangle}
+          description="Analyses flagged as high risk"
+        />
+        <RiskLevelCard
+          tone="medium"
+          label="Medium Risk"
+          count={mediumCount}
+          total={total}
+          icon={AlertCircle}
+          description="Analyses requiring attention"
+        />
+        <RiskLevelCard
+          tone="low"
+          label="Low Risk"
+          count={lowCount}
+          total={total}
+          icon={ShieldCheck}
+          description="Analyses with low exposure"
+        />
       </div>
     </div>
   )
 }
 
-function RiskStat({
-  color,
-  value,
-  label,
-  percent,
-}: {
-  color: 'red' | 'amber' | 'emerald'
-  value: string
+type Tone = 'high' | 'medium' | 'low'
+
+type RiskLevelCardProps = {
+  tone: Tone
   label: string
-  percent: string
-}) {
+  count: number
+  total: number
+  description: string
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>
+}
+
+function RiskLevelCard({
+  tone,
+  label,
+  count,
+  total,
+  description,
+  icon: Icon,
+}: RiskLevelCardProps) {
+  const percent = total ? Math.round((count / total) * 100) : 0
+
+  const toneStyles: Record<
+    Tone,
+    {
+      bg: string
+      border: string
+      text: string
+      chipBg: string
+      chipText: string
+    }
+  > = {
+    high: {
+      bg: 'bg-red-50',
+      border: 'border-red-100',
+      text: 'text-red-600',
+      chipBg: 'bg-red-100',
+      chipText: 'text-red-600',
+    },
+    medium: {
+      bg: 'bg-amber-50',
+      border: 'border-amber-100',
+      text: 'text-amber-600',
+      chipBg: 'bg-amber-100',
+      chipText: 'text-amber-600',
+    },
+    low: {
+      bg: 'bg-emerald-50',
+      border: 'border-emerald-100',
+      text: 'text-emerald-600',
+      chipBg: 'bg-emerald-100',
+      chipText: 'text-emerald-600',
+    },
+  }
+
+  const styles = toneStyles[tone]
+
   return (
-    <div className={`bg-${color}-500/10 rounded-xl p-4`}>
-      <div className={`text-3xl font-bold text-${color}-500 mb-0.5`}>
-        {value}
+    <div
+      className={`rounded-2xl p-4 ${styles.bg} border ${styles.border} flex flex-col gap-3`}
+    >
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div
+            className={`w-8 h-8 rounded-xl flex items-center justify-center bg-white/80 ${styles.text}`}
+          >
+            <Icon className="w-4 h-4" />
+          </div>
+          <span className={`text-xs font-semibold uppercase ${styles.text}`}>
+            {label}
+          </span>
+        </div>
+
+        <span
+          className={`px-2 py-0.5 rounded-full text-[11px] font-semibold ${styles.chipBg} ${styles.chipText}`}
+        >
+          {percent}%
+        </span>
       </div>
-      <div className="text-xs text-slate-500 font-medium mb-3">
-        {label}
+
+      <div className="flex items-baseline gap-2">
+        <span className={`text-3xl font-bold ${styles.text}`}>{count}</span>
+        <span className="text-xs text-slate-500">analyses</span>
       </div>
-      <div className="h-1.5 rounded-full bg-black/5 overflow-hidden">
-        <div
-          className={`h-full rounded-full bg-gradient-to-r from-${color}-500 to-${color}-400`}
-          style={{ width: percent }}
-        />
-      </div>
+
+      <p className="text-xs text-slate-500 leading-snug">{description}</p>
     </div>
   )
 }
