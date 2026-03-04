@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { isAxiosError } from 'axios'
@@ -12,6 +12,7 @@ import { FeatureHighlights } from '@/components/newanalysis/FeatureHighlights'
 import { useCreateAnalysis, useCreateAnalysisFromFile } from '@/api/analysis/hooks'
 import toast from 'react-hot-toast'
 import { toastAnalysisQueued } from '@/lib/toast'
+import { useNewAnalysisStore } from '@/store/newAnalysisStore'
 
 function getErrorMessage(error: unknown): string {
   if (isAxiosError(error) && error.response?.data?.detail) {
@@ -23,10 +24,17 @@ function getErrorMessage(error: unknown): string {
 
 export function NewAnalysisPage() {
   const navigate = useNavigate()
-  const [mode, setMode] = useState<'upload' | 'paste'>('upload')
-  const [title, setTitle] = useState('')
-  const [file, setFile] = useState<File | null>(null)
-  const [text, setText] = useState('')
+  const {
+    mode,
+    title,
+    file,
+    text,
+    setMode,
+    setTitle,
+    setFile,
+    setText,
+    reset,
+  } = useNewAnalysisStore()
 
   const createPaste = useCreateAnalysis()
   const createUpload = useCreateAnalysisFromFile()
@@ -55,6 +63,7 @@ export function NewAnalysisPage() {
       }
       navigate('/dashboard/analyses')
       toastAnalysisQueued(displayTitle)
+      reset()
     } catch (err) {
       toast.error(getErrorMessage(err))
     }

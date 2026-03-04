@@ -9,6 +9,7 @@ export const mockAnalyses: AnalysisItem[] = [
     risk: 'High',
     clauses: 12,
     score: 8.4,
+    status: 'completed',
   },
   {
     id: '2',
@@ -18,6 +19,7 @@ export const mockAnalyses: AnalysisItem[] = [
     risk: 'Medium',
     clauses: 8,
     score: 5.2,
+    status: 'completed',
   },
   {
     id: '3',
@@ -27,6 +29,7 @@ export const mockAnalyses: AnalysisItem[] = [
     risk: 'Low',
     clauses: 5,
     score: 2.1,
+    status: 'completed',
   },
   {
     id: '4',
@@ -36,6 +39,7 @@ export const mockAnalyses: AnalysisItem[] = [
     risk: 'High',
     clauses: 15,
     score: 9.1,
+    status: 'completed',
   },
   {
     id: '5',
@@ -45,6 +49,7 @@ export const mockAnalyses: AnalysisItem[] = [
     risk: 'Low',
     clauses: 3,
     score: 1.8,
+    status: 'completed',
   },
   {
     id: '6',
@@ -54,6 +59,7 @@ export const mockAnalyses: AnalysisItem[] = [
     risk: 'Medium',
     clauses: 9,
     score: 4.7,
+    status: 'completed',
   },
   {
     id: '7',
@@ -63,6 +69,7 @@ export const mockAnalyses: AnalysisItem[] = [
     risk: 'High',
     clauses: 14,
     score: 7.9,
+    status: 'completed',
   },
   {
     id: '8',
@@ -72,6 +79,7 @@ export const mockAnalyses: AnalysisItem[] = [
     risk: 'Medium',
     clauses: 11,
     score: 6.3,
+    status: 'completed',
   },
   {
     id: '9',
@@ -81,5 +89,6 @@ export const mockAnalyses: AnalysisItem[] = [
     risk: 'Low',
     clauses: 6,
     score: 2.9,
+    status: 'completed',
   },
 ]

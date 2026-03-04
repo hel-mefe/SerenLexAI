@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { motion } from 'framer-motion'
 
 import { AnalysesHeader } from '@/components/analysis/header/AnalysesHeader'
@@ -8,17 +8,24 @@ import { Pagination } from '@/components/analysis/tables/Pagination'
 
 import type { AnalysisItem, AnalysisStatus, SeverityLevel } from '@/types/analysis'
 import { useAnalysesList } from '@/api/analysis/hooks'
-
-type FilterValue = 'All' | SeverityLevel
+import {
+  useAnalysisFiltersStore,
+  type SeverityFilterValue,
+} from '@/store/analysisFiltersStore'
 
 const PAGE_SIZE = 10
 
 export function AnalysesPage() {
-  const [search, setSearch] = useState('')
-  const [filter, setFilter] = useState<FilterValue>('All')
-  const [statusFilter, setStatusFilter] =
-    useState<'All' | AnalysisStatus>('All')
-  const [page, setPage] = useState(1)
+  const {
+    search,
+    severity,
+    status,
+    page,
+    setSearch,
+    setSeverity,
+    setStatus,
+    setPage,
+  } = useAnalysisFiltersStore()
 
   const {
     data,
@@ -27,7 +34,7 @@ export function AnalysesPage() {
     refetch,
   } = useAnalysesList({
     search,
-    filter,
+    filter: severity,
     page,
     pageSize: PAGE_SIZE,
   })
@@ -35,9 +42,9 @@ export function AnalysesPage() {
   const items = (data?.items ?? []) as AnalysisItem[]
 
   const filteredItems = useMemo(() => {
-    if (statusFilter === 'All') return items
-    return items.filter((item) => item.status === statusFilter)
-  }, [items, statusFilter])
+    if (status === 'All') return items
+    return items.filter((item) => item.status === status)
+  }, [items, status])
 
   const total = filteredItems.length
 
@@ -54,10 +61,10 @@ export function AnalysesPage() {
         <AnalysesFiltersBar
           search={search}
           onSearchChange={setSearch}
-          filter={filter}
-          onFilterChange={setFilter}
-          statusFilter={statusFilter}
-          onStatusFilterChange={setStatusFilter}
+          filter={severity as SeverityFilterValue}
+          onFilterChange={setSeverity}
+          statusFilter={status}
+          onStatusFilterChange={setStatus as (value: 'All' | AnalysisStatus) => void}
         />
 
         {isLoading ? (
