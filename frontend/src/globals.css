@@ -114,6 +114,18 @@
     animation: gradientShift 8s ease infinite;
   }
 
+  .bg-logo-gradient {
+    background: linear-gradient(
+      135deg,
+      #0D1117 0%,
+      #161B27 35%,
+      #1A2035 70%,
+      #0F1320 100%
+    );
+    background-size: 220% 220%;
+    animation: gradientShift 10s ease-in-out infinite;
+  }
+
   @keyframes gradientShift {
     0% {
       background-position: 0% 50%;
