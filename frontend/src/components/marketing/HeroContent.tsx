@@ -11,9 +11,12 @@ export function HeroContent() {
                 Miss Nothing.
                 </span>
             </h1>
-            <p className="text-sm text-white/50 max-w-[380px] mb-8">
+            <p className="text-sm text-white/50 max-w-[380px] mb-6">
                 Project managers and commercial leads sign contracts
                 without legal counsel every day.
+            </p>
+            <p className="text-sm text-white/60 max-w-[420px] leading-relaxed">
+                SerenLexAI is the ultimate AI-powered tool for contract review: it flags risks, explains clauses in plain English, and helps non-lawyers sign with confidence.
             </p>
         </div>
 

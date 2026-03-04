@@ -3,7 +3,6 @@ import { RiskDistributionCard } from '@/components/dashboard/cards/RiskDistribut
 import { CompletedTodayCard } from '@/components/dashboard/cards/CompletedTodayCard'
 import { RecentAnalysesCard } from '@/components/dashboard/cards/RecentAnalysesCard'
 import { OptimizeCard } from '@/components/dashboard/cards/OptimizeCard'
-import { ThisMonthCard } from '@/components/dashboard/cards/ThisMonthCard'
 import { motion } from 'framer-motion'
 
 import {
@@ -68,7 +67,6 @@ export function DashboardPage() {
         <div className="space-y-5">
           <CompletedTodayCard />
           <OptimizeCard />
-          <ThisMonthCard />
         </div>
       </div>
     </>

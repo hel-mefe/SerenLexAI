@@ -49,7 +49,7 @@ export function AnalysisTopBar({ analysisId }: Props) {
         </button>
 
         <button
-          onClick={() => navigate('/dashboard/upload')}
+          onClick={() => navigate('/dashboard/analyses/new')}
           className="
             flex items-center gap-2 px-4 py-2 rounded-xl cursor-pointer
             text-sm font-semibold text-white
