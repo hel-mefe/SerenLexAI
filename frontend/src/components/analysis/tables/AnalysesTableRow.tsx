@@ -60,6 +60,10 @@ export function AnalysesTableRow({ item }: Props) {
           <span className="inline-flex items-center rounded-full border border-red-200 bg-red-50/80 px-2.5 py-0.5 text-[11px] font-semibold text-red-700">
             Failed
           </span>
+        ) : item.status === 'not_contract' ? (
+          <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50/80 px-2.5 py-0.5 text-[11px] font-semibold text-slate-600">
+            Not a contract
+          </span>
         ) : (
           <span className="inline-flex items-center rounded-full border border-amber-200 bg-amber-50/80 px-2.5 py-0.5 text-[11px] font-semibold text-amber-700">
             Processing…

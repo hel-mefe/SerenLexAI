@@ -2,7 +2,7 @@ export type SeverityLevel = 'High' | 'Medium' | 'Low'
 
 export type RiskLevel = SeverityLevel
 
-export type AnalysisStatus = 'pending' | 'completed' | 'failed'
+export type AnalysisStatus = 'pending' | 'completed' | 'failed' | 'not_contract'
 
 export type AnalysisId = string
 

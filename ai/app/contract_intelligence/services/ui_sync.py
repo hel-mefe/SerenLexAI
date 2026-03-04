@@ -80,6 +80,17 @@ async def update_analysis_from_state(
     row = await session.get(Analysis, uuid.UUID(analysis_id))
     if not row:
         return
+    if getattr(state, "document_type", "contract") == "not_contract":
+        row.status = "not_contract"
+        row.overall_risk = None
+        row.risk_score = None
+        row.flagged_count = 0
+        row.high_count = 0
+        row.medium_count = 0
+        row.low_count = 0
+        raw_parts = [b.text for b in state.extracted_blocks]
+        row.raw_text = "\n".join(raw_parts).strip() if raw_parts else None
+        return
     flagged, high, medium, low = _counts_from_state(state)
     row.status = "failed" if state.fatal_error else ("partial" if state.errors else "completed")
     row.overall_risk = state.risk_level
@@ -130,10 +141,25 @@ async def sync_workflow_result_to_ui(
     """
     Persist workflow result into analyses/clauses and emit final Action.
     Call after run_contract_analysis.
+    When document_type is not_contract, status is set to not_contract and no clauses are written.
     """
     aid = uuid.UUID(analysis_id)
     uid = uuid.UUID(user_id) if user_id else None
     await update_analysis_from_state(session, analysis_id, state)
+    document_type = getattr(state, "document_type", "contract")
+    if document_type == "not_contract":
+        await upsert_clauses_for_analysis(session, analysis_id, state)
+        reason = getattr(state, "document_type_reason", None) or "Document was classified as not a legal contract."
+        await emit_action(
+            session,
+            aid,
+            uid,
+            "COMPLETED",
+            "Document classified as not a contract",
+            reason[:512] if reason else "No clause analysis performed.",
+            meta={"document_type": "not_contract", "reason": reason},
+        )
+        return
     await upsert_clauses_for_analysis(session, analysis_id, state)
     if state.fatal_error or state.errors:
         await emit_action(

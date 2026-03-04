@@ -39,4 +39,7 @@ class ContractState(BaseModel):
     total_tokens_used: int = 0
     analysis_id: Optional[str] = None
     user_id: Optional[str] = None
+    # Set by document_classifier: if not_contract, pipeline skips clause analysis
+    document_type: Literal["contract", "not_contract"] = "contract"
+    document_type_reason: Optional[str] = None
 

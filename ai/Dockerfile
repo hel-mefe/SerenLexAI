@@ -7,5 +7,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY app ./app
 
-CMD ["celery", "-A", "app.contract_intelligence.worker.celery_app:celery_app", "worker", "--loglevel=info"]
+# Load tasks module so contract_intelligence.run_analysis is registered
+CMD ["celery", "-A", "app.contract_intelligence.worker.tasks:celery_app", "worker", "--loglevel=info"]
 

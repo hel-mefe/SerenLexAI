@@ -84,7 +84,9 @@ export const mapAnalysisListItemDto: DtoMapper<
       ? 'completed'
       : rawStatus === 'failed'
         ? 'failed'
-        : 'pending'
+        : rawStatus === 'not_contract'
+          ? 'not_contract'
+          : 'pending'
 
   return {
     id: dto.id as AnalysisId,

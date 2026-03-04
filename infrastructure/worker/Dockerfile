@@ -17,5 +17,5 @@ RUN uv pip install --system .
 # Copy backend source code
 COPY . .
 
-# NOTE: adjust the Celery app path when you add a concrete celery_app module
-CMD ["celery", "-A", "app.core.celery_app", "worker", "--loglevel=info"]
+# Backend Celery app is in ai.tasks (producer); AI worker consumes contract_intelligence tasks
+CMD ["celery", "-A", "ai.tasks:celery_app", "worker", "--loglevel=info"]

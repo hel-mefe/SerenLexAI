@@ -2,7 +2,7 @@ import { Search } from 'lucide-react'
 import type { SeverityLevel } from '@/types/analysis'
 
 type SeverityFilterValue = 'All' | SeverityLevel
-type StatusFilterValue = 'All' | 'completed' | 'pending' | 'failed'
+type StatusFilterValue = 'All' | 'completed' | 'pending' | 'failed' | 'not_contract'
 
 type Props = {
   search: string
@@ -33,6 +33,7 @@ export function AnalysesFiltersBar({
     'completed',
     'pending',
     'failed',
+    'not_contract',
   ]
 
   return (
@@ -93,7 +94,9 @@ export function AnalysesFiltersBar({
                       ? 'Processing'
                       : item === 'failed'
                         ? 'Failed'
-                        : 'All'
+                        : item === 'not_contract'
+                          ? 'Not a contract'
+                          : 'All'
                 return (
                   <button
                     key={item}
