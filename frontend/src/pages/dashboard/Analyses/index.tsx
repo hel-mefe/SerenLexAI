@@ -6,7 +6,7 @@ import { AnalysesFiltersBar } from '@/components/analysis/filters/AnalysesFilter
 import { AnalysesTable } from '@/components/analysis/tables/AnalysesTable'
 import { Pagination } from '@/components/analysis/tables/Pagination'
 
-import type { AnalysisItem, AnalysisStatus, SeverityLevel } from '@/types/analysis'
+import type { AnalysisItem, AnalysisStatus } from '@/types/analysis'
 import { useAnalysesList } from '@/api/analysis/hooks'
 import {
   useAnalysisFiltersStore,
