@@ -37,6 +37,7 @@ export function DashboardPage() {
           description="Upload PDF or paste text"
           icon={UploadCloud}
           variant="primary"
+          to="/dashboard/analyses/new"
           delay={0}
         />
 
