@@ -29,5 +29,6 @@ class Settings(BaseSettings):
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
+    print('***** OPENAI_KEY ==> ', os.getenv("OPENAI_KEY"))
     return Settings()  # type: ignore[call-arg]
 

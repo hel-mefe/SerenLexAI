@@ -30,6 +30,27 @@ class TimestampMixin:
     )
 
 
+class User(Base, TimestampMixin):
+    """
+    Minimal user table for FK resolution.
+
+    MVP uses a single logical user and keeps `user_id` nullable, but the `users`
+    table still exists in the schema (created by backend migrations). Defining
+    it here prevents SQLAlchemy from failing mapper configuration when it sees
+    ForeignKey("users.id") on `analyses` / `actions`.
+    """
+
+    __tablename__ = "users"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+    )
+    email: Mapped[str] = mapped_column(String(255), nullable=False, unique=True, index=True)
+    name: Mapped[str] = mapped_column(String(255), nullable=False)
+
+
 class Analysis(Base, TimestampMixin):
     """One analysis run; summary and counts for the UI."""
 

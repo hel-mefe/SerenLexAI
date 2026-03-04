@@ -16,8 +16,9 @@ from sqlalchemy import (
     String,
     Text,
 )
-from sqlalchemy.dialects.postgresql import UUID, VECTOR
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from pgvector.sqlalchemy import Vector
 
 
 class Base(DeclarativeBase):
@@ -39,7 +40,7 @@ class Contract(Base):
     file_name: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     file_size_bytes: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     page_count: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
-    metadata: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
+    meta: Mapped[dict[str, Any]] = mapped_column("metadata", JSON, default=dict)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=datetime.utcnow
     )
@@ -75,7 +76,7 @@ class ContractSection(Base):
     page_end: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     position_index: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     embedding: Mapped[Optional[list[float]]] = mapped_column(
-        VECTOR(1536),
+        Vector(1536),
         nullable=True,
     )
     is_amendment: Mapped[bool] = mapped_column(Boolean, default=False)
