@@ -8,7 +8,8 @@ import { ClauseSectionHeader } from '@/components/analysis/header/ClauseSectionH
 import { ClauseList } from '@/components/analysis/clauses/ClauseList'
 import { ClauseNavigation } from '@/components/analysis/sidebar/ClauseNavigation'
 
-import type { SeverityLevel } from '@/types/analysis'
+import type { SeverityLevel, AnalysisId } from '@/types/analysis'
+import { useAnalysisDetail } from '@/api/analysis/hooks'
 
 type FilterValue = 'All' | SeverityLevel
 
@@ -18,6 +19,10 @@ export function AnalysisReportPage() {
   const [severityFilter, setSeverityFilter] =
     useState<FilterValue>('All')
 
+  const { data, isLoading, isError } = useAnalysisDetail(
+    analysisId as AnalysisId | undefined,
+  )
+
   const handleScoreFilter = (level: SeverityLevel | null) => {
     if (!level) {
       setSeverityFilter('All')
@@ -26,6 +31,34 @@ export function AnalysisReportPage() {
 
     setSeverityFilter(level)
   }
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-1 items-center justify-center">
+        <div className="text-sm text-slate-500">
+          Loading analysis report…
+        </div>
+      </div>
+    )
+  }
+
+  if (isError || !data) {
+    return (
+      <div className="flex flex-1 items-center justify-center">
+        <div className="text-sm text-red-500">
+          Unable to load analysis report.
+        </div>
+      </div>
+    )
+  }
+
+  const formattedDate = data.createdAt.toLocaleString('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
 
   return (
     <motion.div
@@ -39,14 +72,14 @@ export function AnalysisReportPage() {
         <AnalysisTopBar analysisId={analysisId} />
 
         <AnalysisScoreCard
-          title="Service Agreement — Acme Corp"
-          date="Dec 18, 2024 · 14:32"
-          flaggedCount={12}
-          score={84}
-          high={4}
-          medium={5}
-          low={3}
-          overallRisk="High"
+          title={data.title}
+          date={formattedDate}
+          flaggedCount={data.flaggedCount}
+          score={data.score ?? 0}
+          high={data.high}
+          medium={data.medium}
+          low={data.low}
+          overallRisk={data.overallRisk ?? 'Low'}
           onFilterChange={handleScoreFilter}
         />
       </div>
@@ -62,7 +95,10 @@ export function AnalysisReportPage() {
           />
 
           {/* Clause List */}
-          <ClauseList filter={severityFilter} />
+          <ClauseList
+            analysisId={analysisId}
+            filter={severityFilter}
+          />
         </div>
 
         {/* Sticky Clause Navigation */}

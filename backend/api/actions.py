@@ -11,7 +11,6 @@ from services.action_service import ActionService
 
 router = APIRouter(prefix="/actions", tags=["actions"])
 
-
 @router.get(
     "",
     response_model=ActionsListResponse,

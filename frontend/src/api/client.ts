@@ -25,6 +25,8 @@ const API_BASE_URL = 'http://localhost:8000/api/v1'
  */
 export const apiClient: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 15_000,
+  // Some endpoints (PDF upload + background enqueue) can take longer;
+  // allow up to 60s before timing out on the client.
+  timeout: 60_000,
 })
 

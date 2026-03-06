@@ -1,0 +1,2 @@
+class DocumentTooLargeError(Exception):
+    pass

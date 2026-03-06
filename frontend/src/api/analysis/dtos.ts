@@ -78,9 +78,9 @@ export const mapAnalysisListItemDto: DtoMapper<
     minute: '2-digit',
   })
 
-  const rawStatus = dto.status ?? 'pending'
+  const rawStatus = (dto.status ?? 'pending').toLowerCase()
   const status =
-    rawStatus === 'completed'
+    rawStatus === 'completed' || rawStatus === 'partial'
       ? 'completed'
       : rawStatus === 'failed'
         ? 'failed'
@@ -120,6 +120,7 @@ export const mapAnalysisDetailDto: DtoMapper<
   AnalysisDetailDto,
   AnalysisDetail
 > = (dto) => {
+  const rawScore = dto.risk_score ?? 0
   return {
     id: dto.id as AnalysisId,
     title: dto.title,
@@ -127,7 +128,8 @@ export const mapAnalysisDetailDto: DtoMapper<
     sourceType: dto.source_type,
     status: dto.status,
     overallRisk: dto.overall_risk,
-    score: dto.risk_score,
+    // Backend returns a 0–10 risk_score; scale to 0–100 for UI.
+    score: rawScore * 10,
     flaggedCount: dto.flagged_count,
     high: dto.high_count,
     medium: dto.medium_count,

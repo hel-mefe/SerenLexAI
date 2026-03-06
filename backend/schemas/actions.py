@@ -7,7 +7,10 @@ from typing import Any, Dict, Literal, Optional
 from pydantic import BaseModel
 
 
-HistoryEventType = Literal["UPLOAD", "COMPLETED", "FAILED"]
+# Keep this aligned with values emitted by both the backend and the AI worker.
+# Backend emits: UPLOAD
+# AI worker emits: PROCESSING_STARTED, COMPLETED, FAILED
+HistoryEventType = Literal["UPLOAD", "PROCESSING_STARTED", "COMPLETED", "FAILED"]
 
 
 class ActionCreate(BaseModel):

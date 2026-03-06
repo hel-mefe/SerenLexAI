@@ -18,6 +18,7 @@ from schemas.analysis import (
     AnalysisDetail,
     AnalysisListItem,
     AnalysisListResponse,
+    RiskLevel,
 )
 from schemas.actions import ActionCreate
 
@@ -58,6 +59,27 @@ class AnalysisService:
         self._clauses = clause_repository
         self._actions = action_repository
 
+    @staticmethod
+    def _normalize_risk(level: Optional[str]) -> Optional[RiskLevel]:
+        """
+        Normalize risk strings coming from the DB / AI worker into
+        the UI enum: 'High' | 'Medium' | 'Low'.
+
+        - Accepts lower/upper case (e.g. 'high', 'HIGH').
+        - Maps 'critical' to 'High' for display purposes.
+        - Returns None for unknown/empty values.
+        """
+        if not level:
+            return None
+        value = level.lower()
+        if value in {"high", "critical"}:
+            return "High"
+        if value == "medium":
+            return "Medium"
+        if value == "low":
+            return "Low"
+        return None
+
     def list_analyses(
         self,
         *,
@@ -85,7 +107,7 @@ class AnalysisService:
                     id=a.id,
                     name=a.title,
                     date=a.created_at,
-                    risk=a.overall_risk,
+                    risk=self._normalize_risk(a.overall_risk),
                     clauses=clauses_count,
                     score=a.risk_score or 0,
                     status=a.status,
@@ -110,7 +132,7 @@ class AnalysisService:
             original_filename=analysis.original_filename,
             source_type=analysis.source_type,
             status=analysis.status,
-            overall_risk=analysis.overall_risk,
+            overall_risk=self._normalize_risk(analysis.overall_risk),
             risk_score=analysis.risk_score,
             flagged_count=analysis.flagged_count,
             high_count=analysis.high_count,
