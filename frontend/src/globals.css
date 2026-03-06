@@ -164,6 +164,6 @@ html {
 }
 
 body {
-  background: var(--color-surface);
+  background: none;
   color: var(--color-neutral-900);
 }

@@ -53,17 +53,25 @@ export function NewAnalysisPage() {
     const displayTitle = title.trim() || (mode === 'upload' && file ? file.name : '') || 'New analysis'
     try {
       if (mode === 'upload' && file) {
-        await createUpload.mutateAsync({ file, title: displayTitle })
+        const result = await createUpload.mutateAsync({
+          file,
+          title: displayTitle,
+        })
+
+        toastAnalysisQueued(displayTitle)
+        reset()
+        // Go straight to the report page; it will show the AI loader while processing.
+        navigate(`/dashboard/analyses/${result.id}`)
       } else {
         await createPaste.mutateAsync({
           title: displayTitle,
           source_type: 'paste',
           raw_text: text.trim(),
         })
+        toastAnalysisQueued(displayTitle)
+        navigate('/dashboard/analyses')
+        reset()
       }
-      navigate('/dashboard/analyses')
-      toastAnalysisQueued(displayTitle)
-      reset()
     } catch (err) {
       toast.error(getErrorMessage(err))
     }

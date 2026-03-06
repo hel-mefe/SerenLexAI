@@ -1,12 +1,14 @@
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useState } from 'react'
+import { ArrowLeft } from 'lucide-react'
 
 import { AnalysisTopBar } from '@/components/analysis/header/AnalysisTopBar'
 import { AnalysisScoreCard } from '@/components/analysis/cards/AnalysisScoreCard'
 import { ClauseSectionHeader } from '@/components/analysis/header/ClauseSectionHeader'
 import { ClauseList } from '@/components/analysis/clauses/ClauseList'
 import { ClauseNavigation } from '@/components/analysis/sidebar/ClauseNavigation'
+import { AnalysisProcessingOverlay } from '@/components/analysis/processing/AnalysisProcessingOverlay'
 
 import type { SeverityLevel, AnalysisId } from '@/types/analysis'
 import { useAnalysisDetail } from '@/api/analysis/hooks'
@@ -15,12 +17,14 @@ type FilterValue = 'All' | SeverityLevel
 
 export function AnalysisReportPage() {
   const { analysisId } = useParams<{ analysisId: string }>()
+  const navigate = useNavigate()
 
   const [severityFilter, setSeverityFilter] =
     useState<FilterValue>('All')
 
   const { data, isLoading, isError } = useAnalysisDetail(
     analysisId as AnalysisId | undefined,
+    { refetchIntervalMs: 2500 },
   )
 
   const handleScoreFilter = (level: SeverityLevel | null) => {
@@ -32,16 +36,6 @@ export function AnalysisReportPage() {
     setSeverityFilter(level)
   }
 
-  if (isLoading) {
-    return (
-      <div className="flex flex-1 items-center justify-center">
-        <div className="text-sm text-slate-500">
-          Loading analysis report…
-        </div>
-      </div>
-    )
-  }
-
   if (isError || !data) {
     return (
       <div className="flex flex-1 items-center justify-center">
@@ -49,6 +43,34 @@ export function AnalysisReportPage() {
           Unable to load analysis report.
         </div>
       </div>
+    )
+  }
+
+  if (isLoading || data.status === 'pending') {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        className="relative flex-1 flex flex-col min-h-[60vh]"
+      >
+        <div className="absolute top-0 left-0">
+          <button
+            onClick={() => navigate('/dashboard/analyses')}
+            className="flex items-center gap-2 p-2 rounded-lg text-neutral-600 hover:text-neutral-900 hover:bg-neutral-200/60 transition-colors"
+            aria-label="Back to analyses"
+          >
+            <ArrowLeft className="w-4 h-4" />
+          </button>
+        </div>
+
+        <div className="flex-1 flex">
+          <AnalysisProcessingOverlay
+            analysisId={analysisId as AnalysisId}
+            onDone={() => { /* no-op */ }}
+          />
+        </div>
+      </motion.div>
     )
   }
 

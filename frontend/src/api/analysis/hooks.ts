@@ -34,7 +34,12 @@ export function useAnalysesList(options?: {
   })
 }
 
-export function useAnalysisDetail(id: AnalysisId | undefined) {
+export function useAnalysisDetail(
+  id: AnalysisId | undefined,
+  options?: { refetchIntervalMs?: number },
+) {
+  const refetchIntervalMs = options?.refetchIntervalMs
+
   return useQuery<AnalysisDetail, Error>({
     queryKey: analysesKeys.detail(id),
     queryFn: () => {
@@ -44,6 +49,7 @@ export function useAnalysisDetail(id: AnalysisId | undefined) {
       return fetchAnalysisDetail(id)
     },
     enabled: Boolean(id),
+    refetchInterval: refetchIntervalMs,
   })
 }
 
