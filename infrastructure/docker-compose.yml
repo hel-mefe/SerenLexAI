@@ -47,6 +47,10 @@ services:
     volumes:
       # Hot reload API code without rebuilding the image
       - ../backend:/app:cached
+      # Shared uploads dir for AI worker to read PDFs
+      - uploads_data:/app/uploads
+      # Shared reports dir for AI worker to write / API to serve report PDFs
+      - reports_data:/app/reports
     depends_on:
       - postgres
       - redis
@@ -79,24 +83,38 @@ services:
 
   ai_worker:
     build:
-      context: ../ai
-      dockerfile: ./Dockerfile
+      context: ../langgraph-ai
+      dockerfile: Dockerfile
     container_name: serenlex_ai_worker
     restart: always
     env_file:
-      - ../env/ai.env
+      - ../langgraph-ai/.env
+    environment:
+      # Override for Docker: use container hostnames
+      DATABASE_URL: postgresql+psycopg2://postgres:postgres@serenlex_postgres:5432/serenlex
+      REDIS_URL: redis://serenlex_redis:6379/0
+      # Write generated report PDFs to shared volume for API to serve
+      REPORTS_DIR: /app/reports
+    # Use the image CMD (uv run python -m celery ...) defined in langgraph-ai/Dockerfile
     volumes:
-      # Hot reload AI code without rebuilding the image
-      - ../ai:/app:cached
+      # Mount only source to avoid clobbering the image's .venv
+      - ../langgraph-ai/src:/app/src:cached
+      # Shared uploads dir to read PDFs saved by the API
+      - uploads_data:/app/uploads
+      # Shared reports dir to write generated report PDFs
+      - reports_data:/app/reports
     depends_on:
       - postgres
       - redis
+      - minio
     networks:
       - serenlex_network
 
 volumes:
   postgres_data:
   minio_data:
+  uploads_data:
+  reports_data:
 
 networks:
   serenlex_network:

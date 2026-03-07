@@ -28,6 +28,7 @@ export const mapClauseDto: DtoMapper<ClauseDto, ClauseItem> = (dto) => {
   return {
     id: dto.id as ClauseId,
     title: dto.title,
+    clauseType: dto.clause_type ?? null,
     severity: dto.severity,
     originalText: dto.original_text,
     riskExplanation: dto.risk_explanation,

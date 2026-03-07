@@ -10,6 +10,7 @@ from contract_ai.nodes.agents.analyse_clauses_node import analyse_clauses_node
 from contract_ai.nodes.agents.anomaly_detection_node import anomaly_detection_node
 from contract_ai.nodes.aggregation.aggregate_results_node import aggregate_results_node
 from contract_ai.nodes.persistence.debug_print_results_node import debug_print_results_node
+from contract_ai.nodes.persistence.persist_results_node import persist_results_node
 from contract_ai.nodes.report.generate_report_node import generate_report_pdf_node
 
 
@@ -33,7 +34,9 @@ def build_graph():
     builder.add_node("anomaly_detection",   anomaly_detection_node)
     builder.add_node("aggregate_results",   aggregate_results_node)
     builder.add_node("generate_pdf_report", generate_report_pdf_node)
-    builder.add_node("persist_results",     debug_print_results_node)
+    # Persist to Postgres, then optionally print a debug report.
+    builder.add_node("persist_results",     persist_results_node)
+    builder.add_node("debug_print_results", debug_print_results_node)
 
     builder.set_entry_point("extract_pages")
 
@@ -50,11 +53,12 @@ def build_graph():
         },
     )
 
-    builder.add_edge("validate_document", "analyse_clauses")
-    builder.add_edge("analyse_clauses",   "anomaly_detection")
-    builder.add_edge("anomaly_detection", "aggregate_results")
-    builder.add_edge("aggregate_results", "generate_pdf_report")
+    builder.add_edge("validate_document",   "analyse_clauses")
+    builder.add_edge("analyse_clauses",     "anomaly_detection")
+    builder.add_edge("anomaly_detection",   "aggregate_results")
+    builder.add_edge("aggregate_results",   "generate_pdf_report")
     builder.add_edge("generate_pdf_report", "persist_results")
-    builder.add_edge("persist_results",   END)
+    builder.add_edge("persist_results",     "debug_print_results")
+    builder.add_edge("debug_print_results", END)
 
     return builder.compile()

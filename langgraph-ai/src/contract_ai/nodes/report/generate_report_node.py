@@ -822,10 +822,10 @@ def generate_report_pdf_node(state: dict) -> dict:
         "raw_text":      state.get("raw_text", ""),
     }
 
-    output_path = f"reports/{state.get('analysis_id', 'report')}_risk_report.pdf"
-
     import os
-    os.makedirs("reports", exist_ok=True)
+    reports_dir = os.environ.get("REPORTS_DIR", "reports")
+    os.makedirs(reports_dir, exist_ok=True)
+    output_path = os.path.join(reports_dir, f"{state.get('analysis_id', 'report')}_risk_report.pdf")
 
     generate_report_pdf(analysis_data, output_path)
 

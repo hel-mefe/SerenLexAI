@@ -4,6 +4,8 @@ Version: 0.1.0
 Summary: Add your description here
 Requires-Python: >=3.11
 Description-Content-Type: text/markdown
+Requires-Dist: celery>=5.6.2
+Requires-Dist: redis>=5.0.0
 Requires-Dist: langchain-core>=1.2.17
 Requires-Dist: langchain-openai>=1.1.10
 Requires-Dist: langgraph>=1.0.10
@@ -11,5 +13,14 @@ Requires-Dist: openai>=2.24.0
 Requires-Dist: pdf2image>=1.17.0
 Requires-Dist: pillow>=12.1.1
 Requires-Dist: pydantic>=2.12.5
+Requires-Dist: pypdf>=6.7.5
+Requires-Dist: pytesseract>=0.3.13
 Requires-Dist: python-dotenv>=1.2.2
+Requires-Dist: psycopg2-binary>=2.9.10
+Requires-Dist: reportlab>=4.4.10
+Requires-Dist: sqlalchemy>=2.0.48
 Requires-Dist: tiktoken>=0.12.0
+
+# contract-ai
+
+LangGraph-based contract analysis for SerenLex.

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Optional
+
 from celery import Celery
 
 from core.config import settings
@@ -12,30 +14,26 @@ celery_app = Celery(
     backend=settings.REDIS_URL,
 )
 
-TASK_NAME = "contract_intelligence.run_analysis"
+# langgraph-ai worker consumes this task name
+TASK_NAME = "contract_ai.run_analysis"
 
 
-def enqueue_contract_analysis(analysis: Analysis) -> None:
+def enqueue_contract_analysis(
+    analysis: Analysis,
+    pdf_path: Optional[str] = None,
+) -> None:
     """
-    Enqueue an analysis job for the AI worker.
+    Enqueue an analysis job for the langgraph-ai worker (contract_ai).
 
-    The AI worker will populate analyses/clauses based on this analysis.
+    The worker expects analysis_id and pdf_path. Only enqueue when we have
+    a PDF path (i.e. from upload). Paste analyses are not yet supported.
     """
-    if not analysis.raw_text:
-        # For now we only send text-based jobs; PDF ingestion was already done.
+    if not pdf_path:
         return
 
     payload = {
-        "contract_id": str(analysis.id),
-        "analysis_run_id": str(analysis.id),
-        "user_id": None,
-        "raw_input": analysis.raw_text,
-        "is_base64": False,
-        "file_name": analysis.original_filename,
-        "content_type": "text/plain",
-        "metadata": {
-            "source_type": analysis.source_type,
-        },
+        "analysis_id": str(analysis.id),
+        "pdf_path": pdf_path,
     }
 
     celery_app.send_task(TASK_NAME, kwargs={"payload": payload})

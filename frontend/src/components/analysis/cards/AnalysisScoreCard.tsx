@@ -7,11 +7,11 @@ type Props = {
   title: string
   date: string
   flaggedCount: number
-  score: number
   high: number
   medium: number
   low: number
-  overallRisk: SeverityLevel
+  overallRisk: SeverityLevel | null
+  status: string
   onFilterChange?: (level: SeverityLevel | null) => void
 }
 
@@ -19,11 +19,11 @@ export function AnalysisScoreCard({
   title,
   date,
   flaggedCount,
-  score,
   high,
   medium,
   low,
   overallRisk,
+  status,
   onFilterChange,
 }: Props) {
   const [selectedSeverity, setSelectedSeverity] =
@@ -34,25 +34,35 @@ export function AnalysisScoreCard({
     onFilterChange?.(level)
   }
 
-  const riskStyles = {
+  const isNotContract = status === 'not_contract'
+
+  const riskStyles: Record<
+    SeverityLevel,
+    { badge: string; text: string }
+  > = {
     High: {
-      badge: 'bg-red-100 text-red-600',
-      text: 'text-red-500',
-      gradient: 'from-red-400 to-red-500',
+      badge: 'bg-risk-high-bg text-risk-high',
+      text: 'text-risk-high',
     },
     Medium: {
-      badge: 'bg-amber-100 text-amber-600',
-      text: 'text-amber-500',
-      gradient: 'from-amber-400 to-amber-500',
+      badge: 'bg-risk-medium-bg text-risk-medium',
+      text: 'text-risk-medium',
     },
     Low: {
-      badge: 'bg-emerald-100 text-emerald-600',
-      text: 'text-emerald-500',
-      gradient: 'from-emerald-400 to-emerald-500',
+      badge: 'bg-risk-low-bg text-risk-low',
+      text: 'text-risk-low',
     },
   }
 
-  const styles = riskStyles[overallRisk]
+  const notContractStyles = {
+    badge: 'bg-slate-100 text-slate-600',
+    text: 'text-slate-500',
+  }
+
+  const displayRisk = isNotContract ? null : (overallRisk ?? 'Low')
+  const styles = displayRisk
+    ? riskStyles[displayRisk]
+    : notContractStyles
 
   return (
     <motion.div
@@ -61,14 +71,13 @@ export function AnalysisScoreCard({
       transition={{ duration: 0.4 }}
       className="rounded-2xl p-14 bg-white/80 border border-black/5 backdrop-blur"
     >
-      {/* Top Section */}
-      <div className="flex items-start justify-between mb-6">
+      <div className="flex items-start justify-between">
         <div>
           <div className="flex items-center gap-3 mb-3">
             <span
               className={`px-3 py-1.5 rounded-xl text-sm font-bold ${styles.badge}`}
             >
-              {overallRisk} Risk Contract
+              {isNotContract ? 'Not a contract' : `${displayRisk} Risk Contract`}
             </span>
 
             <span className="text-xs text-slate-400">
@@ -84,52 +93,21 @@ export function AnalysisScoreCard({
             {flaggedCount} clauses flagged for review
           </p>
         </div>
-
-        {/* Big Score */}
-        <div className="text-right flex-shrink-0 ml-6">
-          <div className={`text-5xl font-bold ${styles.text}`}>
-            {score}
-          </div>
-          <div className="text-xs text-slate-400 mt-1">
-            Risk Score / 100
-          </div>
-        </div>
       </div>
 
-      {/* Severity Filters */}
-      <div className="mb-6">
-        <SeverityFilters
-          counts={{
-            High: high,
-            Medium: medium,
-            Low: low,
-          }}
-          selected={selectedSeverity}
-          onSelect={handleSelect}
-        />
-      </div>
-
-      {/* Progress Bar */}
-      <div>
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
-            Overall Risk Score
-          </span>
-
-          <span className={`text-sm font-bold ${styles.text}`}>
-            {score}/100
-          </span>
-        </div>
-
-        <div className="h-2.5 rounded-full bg-slate-100 overflow-hidden">
-          <motion.div
-            initial={{ width: 0 }}
-            animate={{ width: `${score}%` }}
-            transition={{ duration: 0.8, ease: 'easeOut' }}
-            className={`h-full rounded-full bg-gradient-to-r ${styles.gradient}`}
+      {!isNotContract && (
+        <div className="mt-6">
+          <SeverityFilters
+            counts={{
+              High: high,
+              Medium: medium,
+              Low: low,
+            }}
+            selected={selectedSeverity}
+            onSelect={handleSelect}
           />
         </div>
-      </div>
+      )}
     </motion.div>
   )
 }

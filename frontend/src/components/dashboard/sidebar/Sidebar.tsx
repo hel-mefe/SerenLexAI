@@ -26,7 +26,7 @@ export function Sidebar() {
             icon={item.icon}
             path={item.path}
             label={item.tooltip}
-            end={item.path === '/dashboard'}
+            end={item.end ?? false}
           />
         ))}
       </nav>

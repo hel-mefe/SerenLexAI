@@ -2,17 +2,22 @@ FROM ghcr.io/astral-sh/uv:python3.11-bookworm
 
 WORKDIR /app
 
-# Copy project metadata first to leverage Docker layer caching
-COPY pyproject.toml uv.lock ./
+# pdf2image needs poppler-utils; pytesseract needs tesseract-ocr for OCR
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends poppler-utils tesseract-ocr \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install dependencies into a local .venv (no dev deps, use lockfile)
+# Copy everything needed for uv sync (metadata + source so setuptools can find the package)
+COPY pyproject.toml uv.lock README.md ./
+COPY src ./src
+
+# Install dependencies into a local .venv (frozen from lockfile, no dev deps)
 RUN uv sync --frozen --no-dev
 
-# Copy the rest of the application code
+# Copy the rest of the application code (tests, configs, etc.)
 COPY . .
 
 # Default command: run Celery worker for contract_ai
-# The SerenLex stack can enqueue tasks with the name "contract_ai.run_analysis"
+# The SerenLex stack enqueues tasks with the name "contract_ai.run_analysis"
 # and payload {"analysis_id": "<uuid>", "pdf_path": "<path-or-url>"}.
-CMD ["uv", "run", "celery", "-A", "contract_ai.tasks:celery_app", "worker", "--loglevel=info"]
-
+CMD ["uv", "run", "python", "-m", "celery", "-A", "contract_ai.tasks:celery_app", "worker", "--loglevel=info"]

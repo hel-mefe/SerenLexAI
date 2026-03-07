@@ -16,7 +16,6 @@ export function AnalysesTable({ data }: Props) {
               'Date',
               'Risk',
               'Clauses',
-              'Score',
               'Status',
               '',
             ].map((col) => (

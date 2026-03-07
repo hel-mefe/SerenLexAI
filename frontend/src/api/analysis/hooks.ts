@@ -49,7 +49,7 @@ export function useAnalysisDetail(
       return fetchAnalysisDetail(id)
     },
     enabled: Boolean(id),
-    refetchInterval: refetchIntervalMs,
+    ...(refetchIntervalMs !== undefined && { refetchInterval: refetchIntervalMs }),
   })
 }
 

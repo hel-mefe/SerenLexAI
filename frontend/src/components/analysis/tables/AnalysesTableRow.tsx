@@ -34,7 +34,11 @@ export function AnalysesTableRow({ item }: Props) {
       </td>
 
       <td className="px-6 py-4">
-        {isReady ? (
+        {item.status === 'not_contract' ? (
+          <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50/80 px-2.5 py-0.5 text-[11px] font-semibold text-slate-600">
+            Not a contract
+          </span>
+        ) : isReady ? (
           <RiskBadge level={item.risk} />
         ) : (
           <span className="text-xs font-medium text-slate-400">
@@ -45,10 +49,6 @@ export function AnalysesTableRow({ item }: Props) {
 
       <td className="px-6 py-4 text-sm font-medium">
         {isReady ? item.clauses : 'N/A'}
-      </td>
-
-      <td className="px-6 py-4 text-sm font-bold">
-        {isReady ? item.score : 'N/A'}
       </td>
 
       <td className="px-6 py-4">

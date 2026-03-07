@@ -122,3 +122,53 @@ export async function createAnalysisFromFile(
   return mapAnalysisDetailDto(data)
 }
 
+/**
+ * Downloads the uploaded source PDF for an analysis (upload-based only).
+ * Triggers a file download in the browser.
+ *
+ * @param id Analysis ID.
+ * @param suggestedFilename Optional filename (e.g. original_filename or title + .pdf).
+ * @throws Axios error with 404 if no PDF is available.
+ */
+export async function downloadAnalysisPdf(
+  id: string,
+  suggestedFilename?: string,
+): Promise<void> {
+  const { data } = await apiClient.get<Blob>(`/analyses/${id}/pdf`, {
+    responseType: 'blob',
+  })
+  const name = (suggestedFilename || id).replace(/\.pdf$/i, '') + '.pdf'
+  const url = URL.createObjectURL(data)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = name
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
+/**
+ * Downloads the generated SerenLexAI risk report PDF for an analysis.
+ * Filename will be {base}_serenlexai_report.pdf.
+ *
+ * @param id Analysis ID.
+ * @param suggestedBaseName Optional base name (e.g. original_filename or title, without .pdf).
+ * @throws Axios error with 404 if report is not available.
+ */
+export async function downloadAnalysisReportPdf(
+  id: string,
+  suggestedBaseName?: string,
+): Promise<void> {
+  const { data } = await apiClient.get<Blob>(`/analyses/${id}/report/pdf`, {
+    responseType: 'blob',
+  })
+  const base = (suggestedBaseName || id).replace(/\.pdf$/i, '').trim() || id
+  const safeBase = base.replace(/[^\w\s.-]/g, '_').replace(/\s+/g, '_').slice(0, 200)
+  const name = `${safeBase}_serenlexai_report.pdf`
+  const url = URL.createObjectURL(data)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = name
+  a.click()
+  URL.revokeObjectURL(url)
+}
+

@@ -2,12 +2,14 @@ from __future__ import annotations
 
 import io
 import uuid
+from pathlib import Path
 from typing import Optional
 
 import pdfplumber
 from sqlalchemy.orm import Session
 
 from ai.tasks import enqueue_contract_analysis
+from core.config import settings
 from models.analysis import Analysis
 from models.actions import Action
 from repositories.analysis_repository import AnalysisRepository
@@ -121,6 +123,28 @@ class AnalysisService:
             page_size=page_size,
         )
 
+    def get_analysis_pdf_path(self, analysis_id: uuid.UUID) -> Optional[Path]:
+        """
+        Return the path to the stored PDF for this analysis, if it was
+        created from an upload and the file exists.
+        """
+        analysis = self._analyses.get(analysis_id)
+        if not analysis or analysis.source_type != "upload":
+            return None
+        path = Path(settings.UPLOAD_DIR) / f"{analysis_id}.pdf"
+        return path if path.is_file() else None
+
+    def get_analysis_report_pdf_path(self, analysis_id: uuid.UUID) -> Optional[Path]:
+        """
+        Return the path to the generated risk report PDF for this analysis,
+        if the analysis is completed and the report file exists.
+        """
+        analysis = self._analyses.get(analysis_id)
+        if not analysis or analysis.status != "completed":
+            return None
+        path = Path(settings.REPORTS_DIR) / f"{analysis_id}_risk_report.pdf"
+        return path if path.is_file() else None
+
     def get_analysis(self, analysis_id: uuid.UUID) -> AnalysisDetail:
         analysis = self._analyses.get(analysis_id)
         if not analysis:
@@ -182,8 +206,9 @@ class AnalysisService:
     ) -> AnalysisDetail:
         """
         Create an analysis from an uploaded PDF. Validates page count and
-        extracts text. Raises DocumentTooLongError or DocumentExtractionError
-        on validation failure.
+        extracts text. Saves the PDF to the shared uploads dir so the
+        langgraph-ai worker can process it. Raises DocumentTooLongError or
+        DocumentExtractionError on validation failure.
         """
         with pdfplumber.open(io.BytesIO(file_content)) as pdf:
             num_pages = len(pdf.pages)
@@ -201,13 +226,43 @@ class AnalysisService:
                     f"Could not extract text from the document: {e!s}"
                 ) from e
 
-        payload = AnalysisCreate(
+        # Create analysis record first to get ID
+        analysis = Analysis(
             title=title or filename or "Uploaded document",
             original_filename=filename,
             source_type="upload",
+            status="pending",
             raw_text=raw_text or None,
         )
-        return self.create_analysis(payload)
+        self._analyses.create(analysis)
+        self._db.flush()
+
+        # Save PDF to shared uploads dir for langgraph-ai worker
+        upload_dir = Path(settings.UPLOAD_DIR)
+        upload_dir.mkdir(parents=True, exist_ok=True)
+        pdf_path = upload_dir / f"{analysis.id}.pdf"
+        pdf_path.write_bytes(file_content)
+
+        # Log upload event
+        self._log_action(
+            ActionCreate(
+                type="UPLOAD",
+                title="Contract Uploaded",
+                description=analysis.title,
+                analysis_id=analysis.id,
+                metadata={
+                    "source_type": "upload",
+                    "original_filename": filename,
+                },
+            )
+        )
+
+        self._db.commit()
+
+        # Enqueue for langgraph-ai worker (uses shared /app/uploads volume)
+        enqueue_contract_analysis(analysis, pdf_path=str(pdf_path))
+
+        return self.get_analysis(analysis.id)
 
     def _log_action(self, payload: ActionCreate) -> Action:
         action = Action(

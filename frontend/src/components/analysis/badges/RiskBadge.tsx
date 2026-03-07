@@ -5,10 +5,10 @@ type Props = {
 export function RiskBadge({ level }: Props) {
   const styles =
     level === 'High'
-      ? 'bg-red-100 text-red-600'
+      ? 'bg-risk-high-bg text-risk-high'
       : level === 'Medium'
-      ? 'bg-amber-100 text-amber-600'
-      : 'bg-emerald-100 text-emerald-600'
+      ? 'bg-risk-medium-bg text-risk-medium'
+      : 'bg-risk-low-bg text-risk-low'
 
   return (
     <span

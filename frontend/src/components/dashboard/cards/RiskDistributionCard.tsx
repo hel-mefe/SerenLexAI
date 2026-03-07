@@ -101,6 +101,12 @@ type RiskLevelCardProps = {
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>
 }
 
+const LABEL_COLORS: Record<Tone, string> = {
+  high: 'text-risk-high',
+  medium: 'text-risk-medium',
+  low: 'text-risk-low',
+}
+
 function RiskLevelCard({
   tone,
   label,
@@ -110,67 +116,29 @@ function RiskLevelCard({
   icon: Icon,
 }: RiskLevelCardProps) {
   const percent = total ? Math.round((count / total) * 100) : 0
-
-  const toneStyles: Record<
-    Tone,
-    {
-      bg: string
-      border: string
-      text: string
-      chipBg: string
-      chipText: string
-    }
-  > = {
-    high: {
-      bg: 'bg-red-50',
-      border: 'border-red-100',
-      text: 'text-red-600',
-      chipBg: 'bg-red-100',
-      chipText: 'text-red-600',
-    },
-    medium: {
-      bg: 'bg-amber-50',
-      border: 'border-amber-100',
-      text: 'text-amber-600',
-      chipBg: 'bg-amber-100',
-      chipText: 'text-amber-600',
-    },
-    low: {
-      bg: 'bg-emerald-50',
-      border: 'border-emerald-100',
-      text: 'text-emerald-600',
-      chipBg: 'bg-emerald-100',
-      chipText: 'text-emerald-600',
-    },
-  }
-
-  const styles = toneStyles[tone]
+  const labelColor = LABEL_COLORS[tone]
 
   return (
-    <div
-      className={`rounded-2xl p-4 ${styles.bg} border ${styles.border} flex flex-col gap-3`}
-    >
+    <div className="rounded-2xl p-4 bg-surface-subtle border border-border-light flex flex-col gap-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div
-            className={`w-8 h-8 rounded-xl flex items-center justify-center bg-white/80 ${styles.text}`}
+            className={`w-8 h-8 rounded-xl flex items-center justify-center bg-surface-card border border-border-light ${labelColor}`}
           >
             <Icon className="w-4 h-4" />
           </div>
-          <span className={`text-xs font-semibold uppercase ${styles.text}`}>
+          <span className={`text-xs font-semibold uppercase ${labelColor}`}>
             {label}
           </span>
         </div>
 
-        <span
-          className={`px-2 py-0.5 rounded-full text-[11px] font-semibold ${styles.chipBg} ${styles.chipText}`}
-        >
+        <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-neutral-200 text-neutral-700">
           {percent}%
         </span>
       </div>
 
       <div className="flex items-baseline gap-2">
-        <span className={`text-3xl font-bold ${styles.text}`}>{count}</span>
+        <span className="text-3xl font-bold text-neutral-900">{count}</span>
         <span className="text-xs text-slate-500">analyses</span>
       </div>
 

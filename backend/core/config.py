@@ -14,6 +14,12 @@ class Settings(BaseSettings):
     UPLOAD_MAX_PAGES: int = 20
     UPLOAD_MAX_FILE_SIZE_MB: int = 10
 
+    # Directory for uploaded PDFs (shared with ai_worker via volume)
+    UPLOAD_DIR: str = "/app/uploads"
+
+    # Directory for generated risk report PDFs (shared with ai_worker via volume)
+    REPORTS_DIR: str = "/app/reports"
+
     # Messaging / background processing
     REDIS_URL: str = "redis://serenlex_redis:6379/0"
 

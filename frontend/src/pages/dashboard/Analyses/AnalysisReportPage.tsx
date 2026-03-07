@@ -7,10 +7,10 @@ import { AnalysisTopBar } from '@/components/analysis/header/AnalysisTopBar'
 import { AnalysisScoreCard } from '@/components/analysis/cards/AnalysisScoreCard'
 import { ClauseSectionHeader } from '@/components/analysis/header/ClauseSectionHeader'
 import { ClauseList } from '@/components/analysis/clauses/ClauseList'
-import { ClauseNavigation } from '@/components/analysis/sidebar/ClauseNavigation'
 import { AnalysisProcessingOverlay } from '@/components/analysis/processing/AnalysisProcessingOverlay'
 
 import type { SeverityLevel, AnalysisId } from '@/types/analysis'
+import type { AnalysisDetail } from '@/api/analysis/dtos'
 import { useAnalysisDetail } from '@/api/analysis/hooks'
 
 type FilterValue = 'All' | SeverityLevel
@@ -27,12 +27,11 @@ export function AnalysisReportPage() {
     { refetchIntervalMs: 2500 },
   )
 
-  const handleScoreFilter = (level: SeverityLevel | null) => {
+  const handleFilter = (level: SeverityLevel | null) => {
     if (!level) {
       setSeverityFilter('All')
       return
     }
-
     setSeverityFilter(level)
   }
 
@@ -46,7 +45,9 @@ export function AnalysisReportPage() {
     )
   }
 
-  if (isLoading || data.status === 'pending') {
+  const analysis = data as AnalysisDetail
+
+  if (isLoading || analysis.status === 'pending') {
     return (
       <motion.div
         initial={{ opacity: 0 }}
@@ -74,7 +75,7 @@ export function AnalysisReportPage() {
     )
   }
 
-  const formattedDate = data.createdAt.toLocaleString('en-GB', {
+  const formattedDate = analysis.createdAt.toLocaleString('en-GB', {
     day: '2-digit',
     month: 'short',
     year: 'numeric',
@@ -91,44 +92,41 @@ export function AnalysisReportPage() {
     >
       {/* 🔹 Top Section */}
       <div className="space-y-6 mx-14">
-        <AnalysisTopBar analysisId={analysisId} />
+        <AnalysisTopBar
+          analysisId={analysis.id}
+          title={analysis.title}
+          date={formattedDate}
+          reviewedCount={analysis.flaggedCount}
+          overallRisk={analysis.overallRisk ?? 'Low'}
+          status={analysis.status}
+          sourceType={analysis.sourceType}
+          originalFilename={analysis.originalFilename}
+        />
 
         <AnalysisScoreCard
-          title={data.title}
+          title={analysis.title}
           date={formattedDate}
-          flaggedCount={data.flaggedCount}
-          score={data.score ?? 0}
-          high={data.high}
-          medium={data.medium}
-          low={data.low}
-          overallRisk={data.overallRisk ?? 'Low'}
-          onFilterChange={handleScoreFilter}
+          flaggedCount={analysis.flaggedCount}
+          high={analysis.high}
+          medium={analysis.medium}
+          low={analysis.low}
+          overallRisk={analysis.overallRisk ?? 'Low'}
+          status={analysis.status}
+          onFilterChange={handleFilter}
         />
       </div>
 
-      {/* 🔹 Main Content Grid */}
-      <div className="grid grid-cols-4 gap-10 ml-14">
-        {/* Main Report Content */}
-        <div className="col-span-4 xl:col-span-3 space-y-8">
-          {/* Clause Filters Header */}
-          <ClauseSectionHeader
-            filter={severityFilter}
-            onFilterChange={setSeverityFilter}
-          />
+      {/* 🔹 Main Content */}
+      <div className="ml-14 space-y-8">
+        <ClauseSectionHeader
+          filter={severityFilter}
+          onFilterChange={setSeverityFilter}
+        />
 
-          {/* Clause List */}
-          <ClauseList
-            analysisId={analysisId}
-            filter={severityFilter}
-          />
-        </div>
-
-        {/* Sticky Clause Navigation */}
-        <div className="hidden xl:block">
-          <div className="sticky top-24">
-            <ClauseNavigation />
-          </div>
-        </div>
+        <ClauseList
+          analysisId={analysisId}
+          filter={severityFilter}
+        />
       </div>
     </motion.div>
   )

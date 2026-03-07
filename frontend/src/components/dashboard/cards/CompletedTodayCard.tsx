@@ -1,4 +1,9 @@
+import { useAnalysesList } from '@/api/analysis/hooks'
+
 export function CompletedTodayCard() {
+  const { data } = useAnalysesList({ page: 1, pageSize: 1 })
+  const total = data?.total ?? 0
+
   return (
     <div className="rounded-2xl p-6 bg-gradient-to-br from-brand-900 to-brand-700 text-white shadow-soft">
       <h3 className="text-sm font-bold mb-1">
@@ -6,7 +11,7 @@ export function CompletedTodayCard() {
       </h3>
 
       <div className="text-4xl font-bold mt-3 mb-5">
-        46
+        {total}
       </div>
 
       <div className="flex items-end gap-1 h-16">

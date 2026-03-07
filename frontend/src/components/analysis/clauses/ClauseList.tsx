@@ -25,9 +25,11 @@ export function ClauseList({ analysisId, filter }: Props) {
 
   const clauses: ClauseItem[] = data?.items ?? []
 
+  const emptyStateClass = 'py-16 text-center text-sm text-slate-500'
+
   if (isLoading) {
     return (
-      <div className="py-16 text-center text-slate-400 text-sm">
+      <div className={emptyStateClass}>
         Loading clauses…
       </div>
     )
@@ -35,12 +37,12 @@ export function ClauseList({ analysisId, filter }: Props) {
 
   if (isError) {
     return (
-      <div className="py-16 text-center text-slate-400 text-sm">
+      <div className={emptyStateClass}>
         Unable to load clauses.
         <button
           type="button"
           onClick={() => refetch()}
-          className="ml-2 text-xs font-semibold text-slate-600 underline"
+          className="ml-2 text-xs font-semibold underline text-slate-600 hover:text-slate-800"
         >
           Try again
         </button>
@@ -50,10 +52,9 @@ export function ClauseList({ analysisId, filter }: Props) {
 
   if (clauses.length === 0) {
     return (
-      <div className="py-16 text-center text-slate-400 text-sm">
+      <div className={emptyStateClass}>
         No clauses found for{' '}
-        <span className="font-semibold capitalize">{filter}</span>{' '}
-        severity.
+        <span className="font-semibold text-slate-700 capitalize">{filter}</span> severity.
       </div>
     )
   }
@@ -64,6 +65,7 @@ export function ClauseList({ analysisId, filter }: Props) {
         <ClauseCard
           key={clause.id}
           title={clause.title}
+          clauseType={clause.clauseType ?? null}
           severity={clause.severity}
           originalText={clause.originalText}
           riskExplanation={clause.riskExplanation}

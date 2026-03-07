@@ -1,4 +1,5 @@
 import type { SeverityLevel } from '@/types/analysis'
+import clsx from 'clsx'
 
 type FilterValue = 'All' | SeverityLevel
 
@@ -22,14 +23,12 @@ export function ClauseSeverityTabs({
           <button
             key={tab}
             onClick={() => onChange(tab)}
-            className={`
-              px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap
-              ${
-                isActive
-                  ? 'bg-slate-900 text-white shadow-md'
-                  : 'bg-white/80 text-slate-600 hover:bg-white border border-slate-200'
-              }
-            `}
+            className={clsx(
+              'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap',
+              isActive
+                ? 'bg-neutral-700 text-white'
+                : 'text-neutral-600 hover:bg-neutral-100'
+            )}
           >
             {tab}
           </button>

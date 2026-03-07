@@ -1,16 +1,49 @@
+import { useState } from 'react'
 import { ArrowLeft, Download, Plus } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { AnalysisTitleBlock } from './AnalysisTitleBlock'
 
+import type { SeverityLevel } from '@/types/analysis'
+import { downloadAnalysisReportPdf } from '@/api/analysis/api'
+
 type Props = {
-  analysisId?: string | undefined
+  analysisId: string
+  title: string
+  date: string
+  reviewedCount: number
+  overallRisk: SeverityLevel | null
+  status: string
+  sourceType: string
+  originalFilename: string | null
 }
 
-export function AnalysisTopBar({ analysisId }: Props) {
+export function AnalysisTopBar({
+  analysisId,
+  title,
+  date,
+  reviewedCount,
+  overallRisk,
+  status,
+  sourceType,
+  originalFilename,
+}: Props) {
   const navigate = useNavigate()
+  const [downloading, setDownloading] = useState(false)
 
-  console.log(analysisId)
+  const canExportPdf = status === 'completed'
+
+  const handleExportPdf = async () => {
+    if (!canExportPdf || downloading) return
+    setDownloading(true)
+    try {
+      const baseName = (originalFilename || title || analysisId).trim()
+      await downloadAnalysisReportPdf(analysisId, baseName || undefined)
+    } finally {
+      setDownloading(false)
+    }
+  }
+
   return (
     <motion.header
       initial={{ opacity: 0, y: -8 }}
@@ -34,19 +67,27 @@ export function AnalysisTopBar({ analysisId }: Props) {
         </button>
 
         <AnalysisTitleBlock
-          title={`Service Agreement — Acme Corp`}
-          riskLevel="High"
-          date="Dec 18, 2024 at 14:32"
-          reviewedCount={12}
+          title={title}
+          riskLevel={overallRisk}
+          status={status}
+          date={date}
+          reviewedCount={reviewedCount}
         />
       </div>
 
       {/* Right Section */}
       <div className="flex items-center gap-3">
-        <button className="flex cursor-pointer text-white items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-gray-600 transition border border-slate-200">
-          <Download className="w-4 h-4" />
-          Export PDF
-        </button>
+        {canExportPdf && (
+          <button
+            type="button"
+            onClick={handleExportPdf}
+            disabled={downloading}
+            className="flex cursor-pointer text-white items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold hover:bg-gray-600 transition border border-slate-200 disabled:opacity-60"
+          >
+            <Download className="w-4 h-4" />
+            {downloading ? 'Downloading…' : 'Export PDF'}
+          </button>
+        )}
 
         <button
           onClick={() => navigate('/dashboard/analyses/new')}

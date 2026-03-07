@@ -4,6 +4,7 @@ import uuid
 from typing import Optional
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile, status
+from fastapi.responses import FileResponse
 
 from core.config import settings
 from core.dependencies import get_analysis_service, get_clause_service
@@ -78,6 +79,87 @@ def get_analysis(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Analysis not found",
         )
+
+
+@router.get(
+    "/{analysis_id}/pdf",
+    response_class=FileResponse,
+    summary="Download the PDF document for an analysis",
+)
+def download_analysis_pdf(
+    analysis_id: uuid.UUID,
+    service: AnalysisService = Depends(get_analysis_service),
+) -> FileResponse:
+    """
+    Returns the uploaded PDF file for this analysis. Only available for
+    analyses created from an upload; returns 404 for paste-based analyses
+    or if the file is missing.
+    """
+    try:
+        detail = service.get_analysis(analysis_id)
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Analysis not found",
+        )
+    path = service.get_analysis_pdf_path(analysis_id)
+    if not path:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No PDF available for this analysis",
+        )
+    filename = (detail.original_filename or "").strip() or f"{detail.title or analysis_id}.pdf"
+    if not filename.lower().endswith(".pdf"):
+        filename = f"{filename}.pdf"
+    return FileResponse(
+        path=path,
+        media_type="application/pdf",
+        filename=filename,
+    )
+
+
+def _sanitize_report_filename(base: str) -> str:
+    """Build a safe download filename: base_serenlexai_report.pdf"""
+    safe = "".join(c for c in base if c.isalnum() or c in " ._-").strip() or "report"
+    safe = safe[: 200]
+    return f"{safe}_serenlexai_report.pdf"
+
+
+@router.get(
+    "/{analysis_id}/report/pdf",
+    response_class=FileResponse,
+    summary="Download the generated risk report PDF",
+)
+def download_analysis_report_pdf(
+    analysis_id: uuid.UUID,
+    service: AnalysisService = Depends(get_analysis_service),
+) -> FileResponse:
+    """
+    Returns the generated SerenLexAI risk report PDF for this analysis.
+    Available only for completed analyses; returns 404 if the report is not ready.
+    """
+    try:
+        detail = service.get_analysis(analysis_id)
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Analysis not found",
+        )
+    path = service.get_analysis_report_pdf_path(analysis_id)
+    if not path:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Report not available for this analysis",
+        )
+    base = (detail.original_filename or "").strip() or (detail.title or "").strip() or str(analysis_id)
+    if base.lower().endswith(".pdf"):
+        base = base[:-4]
+    filename = _sanitize_report_filename(base)
+    return FileResponse(
+        path=path,
+        media_type="application/pdf",
+        filename=filename,
+    )
 
 
 @router.get(
