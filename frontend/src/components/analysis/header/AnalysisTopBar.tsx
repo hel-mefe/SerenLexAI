@@ -25,7 +25,6 @@ export function AnalysisTopBar({
   reviewedCount,
   overallRisk,
   status,
-  sourceType,
   originalFilename,
 }: Props) {
   const navigate = useNavigate()

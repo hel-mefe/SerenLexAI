@@ -93,7 +93,7 @@ export const mapAnalysisListItemDto: DtoMapper<
     name: dto.name,
     date,
     time,
-    risk: dto.risk ?? 'Low',
+    risk: status === 'not_contract' ? null : (dto.risk ?? 'Low'),
     clauses: dto.clauses,
     score: dto.score,
     status,

@@ -33,29 +33,42 @@ def persist_results_node(state):
         # Backend hasn't created the analysis row (or DB mismatch); bail out
         return state
 
-    # Update analysis summary fields
-    analysis.status = "completed"
-    analysis.overall_risk = state.get("overall_risk")
-    analysis.risk_score = state.get("risk_score")
+    # Classifier sets is_contract (bool). Treat False or string "false" as not a contract.
+    raw = state.get("is_contract", True)
+    is_contract = raw is True or (isinstance(raw, str) and raw.lower() == "true")
 
-    analysis.flagged_count = state.get("flagged_count", 0) or 0
-    analysis.high_count = state.get("high_count", 0) or 0
-    analysis.medium_count = state.get("medium_count", 0) or 0
-    analysis.low_count = state.get("low_count", 0) or 0
+    if not is_contract:
+        # Document was classified as not a contract: no risk, no score, no clauses
+        analysis.status = "not_contract"
+        analysis.overall_risk = None
+        analysis.risk_score = None
+        analysis.flagged_count = 0
+        analysis.high_count = 0
+        analysis.medium_count = 0
+        analysis.low_count = 0
+        # Do not insert any clause rows
+    else:
+        # Normal contract: persist risk and clauses
+        analysis.status = "completed"
+        analysis.overall_risk = state.get("overall_risk")
+        analysis.risk_score = state.get("risk_score")
+        analysis.flagged_count = state.get("flagged_count", 0) or 0
+        analysis.high_count = state.get("high_count", 0) or 0
+        analysis.medium_count = state.get("medium_count", 0) or 0
+        analysis.low_count = state.get("low_count", 0) or 0
 
-    # Insert clause rows
-    for result in state.get("clause_results", []):
-        clause = Clause(
-            analysis_id=analysis_id,
-            title=result.title,
-            severity=result.severity,
-            original_text=result.original_text,
-            risk_explanation=result.risk_explanation,
-            recommended_action=result.recommended_action,
-            clause_type=result.clause_type,
-            position_index=result.position_index,
-        )
-        db.add(clause)
+        for result in state.get("clause_results", []):
+            clause = Clause(
+                analysis_id=analysis_id,
+                title=result.title,
+                severity=result.severity,
+                original_text=result.original_text,
+                risk_explanation=result.risk_explanation,
+                recommended_action=result.recommended_action,
+                clause_type=result.clause_type,
+                position_index=result.position_index,
+            )
+            db.add(clause)
 
     db.commit()
     db.close()

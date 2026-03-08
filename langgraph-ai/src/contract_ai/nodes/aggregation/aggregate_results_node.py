@@ -48,11 +48,16 @@ def aggregate_results_node(state):
     # ------------------------------------------------------------------
     # OVERALL RISK:
     # - Any presence of at least one HIGH clause makes the contract HIGH.
+    # - Many MEDIUM risks are elevated to HIGH (feedback: treat as high-risk contract).
     # - Otherwise, MEDIUM depends on MEDIUM clauses and score.
     # - LOW when there are no HIGH clauses and limited MEDIUM signal.
     # ------------------------------------------------------------------
+    MEDIUM_COUNT_HIGH_THRESHOLD = 5  # many mediums → consider contract high risk
+
     if high >= 1:
         overall = "high"
+    elif medium >= MEDIUM_COUNT_HIGH_THRESHOLD:
+        overall = "high"  # many medium risks → high-risk contract
     elif medium >= 3 or score >= 30:
         overall = "medium"
     else:

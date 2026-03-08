@@ -148,7 +148,7 @@ export async function downloadAnalysisPdf(
 
 /**
  * Downloads the generated SerenLexAI risk report PDF for an analysis.
- * Filename will be {base}_serenlexai_report.pdf.
+ * Filename follows convention: [filename]_serenlex_ai_report.pdf
  *
  * @param id Analysis ID.
  * @param suggestedBaseName Optional base name (e.g. original_filename or title, without .pdf).
@@ -163,7 +163,7 @@ export async function downloadAnalysisReportPdf(
   })
   const base = (suggestedBaseName || id).replace(/\.pdf$/i, '').trim() || id
   const safeBase = base.replace(/[^\w\s.-]/g, '_').replace(/\s+/g, '_').slice(0, 200)
-  const name = `${safeBase}_serenlexai_report.pdf`
+  const name = `${safeBase}_serenlex_ai_report.pdf`
   const url = URL.createObjectURL(data)
   const a = document.createElement('a')
   a.href = url
@@ -171,4 +171,3 @@ export async function downloadAnalysisReportPdf(
   a.click()
   URL.revokeObjectURL(url)
 }
-

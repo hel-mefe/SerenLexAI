@@ -107,6 +107,13 @@ const LABEL_COLORS: Record<Tone, string> = {
   low: 'text-risk-low',
 }
 
+/** Risk-colored background gradients for the 3 cards (satisfying, not overwhelming) */
+const CARD_GRADIENTS: Record<Tone, string> = {
+  high: 'linear-gradient(145deg, #FEF2F2 0%, #FEE2E2 40%, #FECACA 100%)',
+  medium: 'linear-gradient(145deg, #FFFBEB 0%, #FEF3C7 40%, #FDE68A 100%)',
+  low: 'linear-gradient(145deg, #ECFDF5 0%, #D1FAE5 40%, #A7F3D0 100%)',
+}
+
 function RiskLevelCard({
   tone,
   label,
@@ -117,13 +124,17 @@ function RiskLevelCard({
 }: RiskLevelCardProps) {
   const percent = total ? Math.round((count / total) * 100) : 0
   const labelColor = LABEL_COLORS[tone]
+  const gradient = CARD_GRADIENTS[tone]
 
   return (
-    <div className="rounded-2xl p-4 bg-surface-subtle border border-border-light flex flex-col gap-3">
+    <div
+      className="rounded-2xl p-4 flex flex-col gap-3 border border-white/40 shadow-sm"
+      style={{ background: gradient }}
+    >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div
-            className={`w-8 h-8 rounded-xl flex items-center justify-center bg-surface-card border border-border-light ${labelColor}`}
+            className={`w-8 h-8 rounded-xl flex items-center justify-center bg-white/70 border border-white/60 ${labelColor}`}
           >
             <Icon className="w-4 h-4" />
           </div>
@@ -132,17 +143,17 @@ function RiskLevelCard({
           </span>
         </div>
 
-        <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-neutral-200 text-neutral-700">
+        <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-white/80 text-neutral-700">
           {percent}%
         </span>
       </div>
 
       <div className="flex items-baseline gap-2">
         <span className="text-3xl font-bold text-neutral-900">{count}</span>
-        <span className="text-xs text-slate-500">analyses</span>
+        <span className="text-xs text-neutral-600">analyses</span>
       </div>
 
-      <p className="text-xs text-slate-500 leading-snug">{description}</p>
+      <p className="text-xs text-neutral-600 leading-snug">{description}</p>
     </div>
   )
 }

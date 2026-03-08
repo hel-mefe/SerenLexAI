@@ -72,7 +72,13 @@ export function RecentAnalysesCard() {
               </div>
 
               <div className="flex items-center gap-3 ml-4">
-                <SeverityBadge severity={item.risk} />
+                {item.status === 'not_contract' || item.risk == null ? (
+                  <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50/80 px-2.5 py-0.5 text-[11px] font-semibold text-slate-600">
+                    Not a contract
+                  </span>
+                ) : (
+                  <SeverityBadge severity={item.risk} />
+                )}
 
                 <button className="opacity-0 group-hover:opacity-100 transition">
                   <PlayCircle className="w-4 h-4 text-slate-500 hover:text-slate-800" />

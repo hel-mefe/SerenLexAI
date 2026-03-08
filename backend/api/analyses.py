@@ -119,10 +119,10 @@ def download_analysis_pdf(
 
 
 def _sanitize_report_filename(base: str) -> str:
-    """Build a safe download filename: base_serenlexai_report.pdf"""
+    """Build a safe download filename: [base]_serenlex_ai_report.pdf"""
     safe = "".join(c for c in base if c.isalnum() or c in " ._-").strip() or "report"
     safe = safe[: 200]
-    return f"{safe}_serenlexai_report.pdf"
+    return f"{safe}_serenlex_ai_report.pdf"
 
 
 @router.get(

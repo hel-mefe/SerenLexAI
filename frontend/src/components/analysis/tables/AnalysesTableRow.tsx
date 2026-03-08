@@ -9,7 +9,7 @@ type Props = {
 export function AnalysesTableRow({ item }: Props) {
   const navigate = useNavigate()
 
-  const isReady = item.status === 'completed'
+  const isReady = item.status === 'completed' || item.status === 'not_contract'
 
   const handleRowClick = () => {
     if (!isReady) return
@@ -38,7 +38,7 @@ export function AnalysesTableRow({ item }: Props) {
           <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50/80 px-2.5 py-0.5 text-[11px] font-semibold text-slate-600">
             Not a contract
           </span>
-        ) : isReady ? (
+        ) : isReady && item.risk ? (
           <RiskBadge level={item.risk} />
         ) : (
           <span className="text-xs font-medium text-slate-400">

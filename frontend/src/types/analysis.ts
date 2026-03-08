@@ -11,7 +11,8 @@ export interface AnalysisItem {
   name: string
   date: string
   time?: string
-  risk: RiskLevel
+  /** null when status is not_contract (no risk level) */
+  risk: RiskLevel | null
   clauses: number
   score: number
   status: AnalysisStatus

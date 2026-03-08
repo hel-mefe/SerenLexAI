@@ -1,4 +1,5 @@
 import toast from 'react-hot-toast'
+import { FileSearch } from 'lucide-react'
 
 /**
  * Show a branded toast when a contract has been submitted for analysis.
@@ -13,6 +14,6 @@ export function toastAnalysisQueued(title?: string) {
 
   toast.success(message, {
     duration: 5500,
-    icon: '📄',
+    icon: <FileSearch className="w-5 h-5 shrink-0" aria-hidden />,
   })
 }

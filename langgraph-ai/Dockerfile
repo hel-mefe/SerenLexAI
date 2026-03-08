@@ -18,6 +18,7 @@ RUN uv sync --frozen --no-dev
 COPY . .
 
 # Default command: run Celery worker for contract_ai
+# Use the venv's python so celery is always found (avoids "No module named celery" when uv run resolves to system python).
 # The SerenLex stack enqueues tasks with the name "contract_ai.run_analysis"
 # and payload {"analysis_id": "<uuid>", "pdf_path": "<path-or-url>"}.
-CMD ["uv", "run", "python", "-m", "celery", "-A", "contract_ai.tasks:celery_app", "worker", "--loglevel=info"]
+CMD ["/app/.venv/bin/python", "-m", "celery", "-A", "contract_ai.tasks:celery_app", "worker", "--loglevel=info"]

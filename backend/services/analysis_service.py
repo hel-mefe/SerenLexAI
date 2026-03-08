@@ -103,15 +103,19 @@ class AnalysisService:
                 a.flagged_count
                 or self._analyses.count_clauses(a.id)
             )
+            # Not-a-contract analyses have no risk, no score
+            is_not_contract = (a.status or "").lower() == "not_contract"
+            risk = None if is_not_contract else self._normalize_risk(a.overall_risk)
+            score = 0 if is_not_contract else (a.risk_score or 0)
 
             items.append(
                 AnalysisListItem(
                     id=a.id,
                     name=a.title,
                     date=a.created_at,
-                    risk=self._normalize_risk(a.overall_risk),
+                    risk=risk,
                     clauses=clauses_count,
-                    score=a.risk_score or 0,
+                    score=score,
                     status=a.status,
                 )
             )
@@ -150,18 +154,27 @@ class AnalysisService:
         if not analysis:
             raise ValueError("Analysis not found")
 
+        # Not-a-contract analyses: no risk, no score, zero counts
+        is_not_contract = (analysis.status or "").lower() == "not_contract"
+        overall_risk = None if is_not_contract else self._normalize_risk(analysis.overall_risk)
+        risk_score = None if is_not_contract else analysis.risk_score
+        flagged = 0 if is_not_contract else (analysis.flagged_count or 0)
+        high_c = 0 if is_not_contract else (analysis.high_count or 0)
+        medium_c = 0 if is_not_contract else (analysis.medium_count or 0)
+        low_c = 0 if is_not_contract else (analysis.low_count or 0)
+
         return AnalysisDetail(
             id=analysis.id,
             title=analysis.title,
             original_filename=analysis.original_filename,
             source_type=analysis.source_type,
             status=analysis.status,
-            overall_risk=self._normalize_risk(analysis.overall_risk),
-            risk_score=analysis.risk_score,
-            flagged_count=analysis.flagged_count,
-            high_count=analysis.high_count,
-            medium_count=analysis.medium_count,
-            low_count=analysis.low_count,
+            overall_risk=overall_risk,
+            risk_score=risk_score,
+            flagged_count=flagged,
+            high_count=high_c,
+            medium_count=medium_c,
+            low_count=low_c,
             created_at=analysis.created_at,
             updated_at=analysis.updated_at,
         )

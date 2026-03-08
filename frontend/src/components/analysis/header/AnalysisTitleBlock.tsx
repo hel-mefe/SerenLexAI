@@ -35,7 +35,7 @@ export function AnalysisTitleBlock({
 
       <p className="text-xs text-slate-300 mt-0.5">
         Analyzed on {date}
-        {reviewedCount > 0 && ` · ${reviewedCount} clauses reviewed`}
+        {!isNotContract && reviewedCount > 0 && ` · ${reviewedCount} clauses reviewed`}
       </p>
     </div>
   )

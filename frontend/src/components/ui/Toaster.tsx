@@ -1,12 +1,13 @@
 import { Toaster as HotToaster } from 'react-hot-toast'
+import { CheckCircle, AlertCircle, Loader2 } from 'lucide-react'
 
 /**
  * Global toast container with SerenLex brand styling.
- * Renders at top-center with elegant, modern defaults.
+ * Renders at top-right with elegant, modern defaults. Uses icons (no emojis).
  */
 const toastOptions = {
   duration: 5000,
-  position: 'top-center' as const,
+  position: 'top-right' as const,
   style: {
     background:
       'linear-gradient(135deg, var(--color-brand-700), var(--color-brand-600))',
@@ -20,18 +21,21 @@ const toastOptions = {
     maxWidth: '420px',
   },
   success: {
+    icon: <CheckCircle className="w-5 h-5 shrink-0" aria-hidden />,
     iconTheme: {
       primary: 'var(--color-risk-low)',
       secondary: 'var(--color-surface-card)',
     },
   },
   error: {
+    icon: <AlertCircle className="w-5 h-5 shrink-0" aria-hidden />,
     iconTheme: {
       primary: 'var(--color-risk-high)',
       secondary: 'var(--color-surface-card)',
     },
   },
   loading: {
+    icon: <Loader2 className="w-5 h-5 shrink-0 animate-spin" aria-hidden />,
     iconTheme: {
       primary: 'var(--color-brand-700)',
       secondary: 'var(--color-neutral-200)',
@@ -52,6 +56,7 @@ export function Toaster() {
       }}
       containerStyle={{
         top: 24,
+        right: 24,
       }}
     />
   )

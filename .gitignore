@@ -6,6 +6,7 @@ infrastructure/env
 env/
 frontend/node_modules
 node_modules
+not_needed
 # Python cache
 __pycache__/
 *.py[cod]

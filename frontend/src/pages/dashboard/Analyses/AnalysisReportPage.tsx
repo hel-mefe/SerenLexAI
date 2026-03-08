@@ -83,6 +83,45 @@ export function AnalysisReportPage() {
     minute: '2-digit',
   })
 
+  const isNotContract = analysis.status === 'not_contract'
+
+  if (isNotContract) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="space-y-10"
+      >
+        <div className="mx-14">
+          <AnalysisTopBar
+            analysisId={analysis.id}
+            title={analysis.title}
+            date={formattedDate}
+            reviewedCount={0}
+            overallRisk={null}
+            status={analysis.status}
+            sourceType={analysis.sourceType}
+            originalFilename={analysis.originalFilename}
+          />
+        </div>
+
+        <div className="mx-14">
+          <div className="max-w-lg mx-auto flex flex-col items-center justify-center py-20 text-center">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50/80 px-8 py-10">
+            <p className="text-lg font-semibold text-slate-800">
+              This document was classified as not a contract.
+            </p>
+            <p className="text-sm text-slate-500 mt-2">
+              No risk assessment, score, or clause analysis is available. Only contract documents receive a full analysis.
+            </p>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    )
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
