@@ -63,24 +63,6 @@ services:
       - "8000:8000"
     networks:
       - serenlex_network
-
-  worker:
-    build:
-      context: ../backend
-      dockerfile: ../infrastructure/worker/Dockerfile
-    container_name: serenlex_worker
-    restart: always
-    env_file:
-      - ../env/backend.env
-    volumes:
-      # Mount backend so task code changes are picked up after restart
-      - ../backend:/app:cached
-    depends_on:
-      - postgres
-      - redis
-    networks:
-      - serenlex_network
-
   ai_worker:
     build:
       context: ../langgraph-ai
