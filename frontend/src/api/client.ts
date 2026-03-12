@@ -2,18 +2,12 @@ import axios, { type AxiosInstance } from 'axios'
 
 /**
  * Base URL for the SerenLex backend.
- *
- * Prefer configuring `VITE_API_BASE_URL` in the frontend `.env`, for example:
- *
- * - `VITE_API_BASE_URL=http://localhost:8000/api/v1`
- *
- * When the variable is not set we default to `/api/v1` so that a dev proxy or
- * same-origin deployment can be used without additional configuration.
- *
- * @constant
+ * Set VITE_API_BASE_URL in frontend/.env (see .env.example).
+ * When unset, defaults to http://localhost:8000/api/v1 for local dev.
  */
-const API_BASE_URL = 'http://localhost:8000/api/v1'
-  // import.meta.env['VITE_API_BASE_URL']?.replace(/\/+$/, '') ?? '/api/v1'
+const API_BASE_URL =
+  (import.meta.env['VITE_API_BASE_URL']?.replace(/\/+$/, '') as string | undefined) ??
+  'http://localhost:8000/api/v1'
 
 /**
  * Shared Axios client instance for the SerenLex backend.

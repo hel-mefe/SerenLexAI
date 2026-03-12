@@ -19,3 +19,6 @@ __pycache__/
 */.env
 langgraph-ai/.env
 langgraph-ai/thorngate.pdf
+# Uploaded PDFs (directory kept via .gitkeep)
+infrastructure/data/uploads/*
+!infrastructure/data/uploads/.gitkeep
