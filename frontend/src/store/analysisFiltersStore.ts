@@ -33,8 +33,8 @@ const initialState: Pick<
 export const useAnalysisFiltersStore =
   create<AnalysisFiltersState>((set) => ({
     ...initialState,
-    setSearch: (value) => set({ search: value }),
-    setSeverity: (value) => set({ severity: value }),
+    setSearch: (value) => set({ search: value, page: 1 }),
+    setSeverity: (value) => set({ severity: value, page: 1 }),
     setStatus: (value) => set({ status: value }),
     setPage: (value) => set({ page: value }),
     reset: () => set(initialState),

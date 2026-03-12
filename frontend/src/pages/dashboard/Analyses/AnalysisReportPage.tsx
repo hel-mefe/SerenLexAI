@@ -83,7 +83,51 @@ export function AnalysisReportPage() {
     minute: '2-digit',
   })
 
+  const isFailed = analysis.status === 'failed'
   const isNotContract = analysis.status === 'not_contract'
+
+  if (isFailed) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="space-y-10"
+      >
+        <div className="mx-14">
+          <AnalysisTopBar
+            analysisId={analysis.id}
+            title={analysis.title}
+            date={formattedDate}
+            reviewedCount={0}
+            overallRisk={null}
+            status={analysis.status}
+            sourceType={analysis.sourceType}
+            originalFilename={analysis.originalFilename}
+          />
+        </div>
+        <div className="mx-14">
+          <div className="max-w-lg mx-auto flex flex-col items-center justify-center py-20 text-center">
+            <div className="rounded-2xl border border-red-100 bg-red-50/60 px-8 py-10">
+              <p className="text-lg font-semibold text-red-800">
+                Analysis failed
+              </p>
+              <p className="text-sm text-red-600/90 mt-2">
+                This document could not be processed. For example, it may exceed the maximum allowed size (20 pages). Please try a shorter document or contact support.
+              </p>
+              <button
+                type="button"
+                onClick={() => navigate('/dashboard/analyses')}
+                className="mt-6 rounded-xl bg-sidebar-gradient px-4 py-2.5 text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+              >
+                Back to analyses
+              </button>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    )
+  }
 
   if (isNotContract) {
     return (

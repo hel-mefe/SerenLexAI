@@ -90,9 +90,17 @@ class AnalysisService:
         page: int,
         page_size: int,
     ) -> AnalysisListResponse:
+        # Normalise incoming risk filter so it matches how values are stored in DB.
+        # DB stores overall_risk as lowercase strings ('high', 'medium', 'low').
+        risk_normalized: Optional[str] = None
+        if risk:
+            value = risk.lower()
+            if value in {"high", "medium", "low"}:
+                risk_normalized = value
+
         analyses, total = self._analyses.list_paginated(
             search=search,
-            risk=risk,
+            risk=risk_normalized,
             page=page,
             page_size=page_size,
         )

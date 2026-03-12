@@ -46,7 +46,9 @@ export function AnalysesPage() {
     return items.filter((item) => item.status === status)
   }, [items, status])
 
-  const total = filteredItems.length
+  // Use backend total for pagination; header shows filtered count
+  const total = data?.total ?? filteredItems.length
+  const totalPages = Math.max(1, Math.ceil((data?.total ?? 0) / PAGE_SIZE))
 
   return (
     <motion.div
@@ -93,7 +95,9 @@ export function AnalysesPage() {
         ) : (
           <>
             <AnalysesTable data={filteredItems} />
-            <Pagination page={page} onChange={setPage} />
+            {total > 0 && totalPages > 1 && (
+              <Pagination page={page} totalPages={totalPages} onChange={setPage} />
+            )}
           </>
         )}
       </main>

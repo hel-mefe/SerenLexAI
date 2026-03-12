@@ -23,7 +23,7 @@ export function useAnalysesList(options?: {
   const { search, filter, page, pageSize } = options ?? {}
 
   return useQuery({
-    queryKey: analysesKeys.list({ search, filter }),
+    queryKey: analysesKeys.list({ search, filter, page, pageSize }),
     queryFn: () =>
       fetchAnalyses({
         search,

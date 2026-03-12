@@ -1,14 +1,21 @@
+SECURITY.md
 backend/.env
 frontend/.env
 infrastructure/.env
 infrastructure/env
 .env
 env/
+*.env
+!*.env.example
+!**/.env.example
 frontend/node_modules
 node_modules
 not_needed
-# Python cache
+# Python cache – do not commit (can contain embedded secrets)
 __pycache__/
 *.py[cod]
+*$py.class
+*.pyo
 */.env
+langgraph-ai/.env
 langgraph-ai/thorngate.pdf

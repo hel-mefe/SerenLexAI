@@ -7,7 +7,7 @@ export function ProtectedRoute({
   children: React.ReactNode
 }) {
   if (!authStorage.isAuthenticated()) {
-    return <Navigate to="/login" replace />
+    return <Navigate to="/signin" replace />
   }
 
   return <>{children}</>

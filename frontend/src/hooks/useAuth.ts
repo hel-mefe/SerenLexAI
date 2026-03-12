@@ -11,7 +11,7 @@ export function useAuth() {
 
   const logout = () => {
     authStorage.logout()
-    navigate('/login')
+    navigate('/')
   }
 
   const isAuthenticated = authStorage.isAuthenticated()

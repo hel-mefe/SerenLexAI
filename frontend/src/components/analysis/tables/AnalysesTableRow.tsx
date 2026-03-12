@@ -10,9 +10,10 @@ export function AnalysesTableRow({ item }: Props) {
   const navigate = useNavigate()
 
   const isReady = item.status === 'completed' || item.status === 'not_contract'
+  const canOpen = isReady || item.status === 'failed'
 
   const handleRowClick = () => {
-    if (!isReady) return
+    if (!canOpen) return
     navigate(`/dashboard/analyses/${item.id}`)
   }
 
@@ -20,7 +21,7 @@ export function AnalysesTableRow({ item }: Props) {
     <tr
       onClick={handleRowClick}
       className={`border-b border-slate-100 transition-colors group ${
-        isReady
+        canOpen
           ? 'hover:bg-slate-50 cursor-pointer'
           : 'opacity-80 cursor-not-allowed'
       }`}
@@ -37,6 +38,10 @@ export function AnalysesTableRow({ item }: Props) {
         {item.status === 'not_contract' ? (
           <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50/80 px-2.5 py-0.5 text-[11px] font-semibold text-slate-600">
             Not a contract
+          </span>
+        ) : item.status === 'failed' ? (
+          <span className="inline-flex items-center rounded-full border border-red-200 bg-red-50/80 px-2.5 py-0.5 text-[11px] font-semibold text-red-700">
+            Failed
           </span>
         ) : isReady && item.risk ? (
           <RiskBadge level={item.risk} />

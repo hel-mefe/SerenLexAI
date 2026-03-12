@@ -157,6 +157,38 @@
   .shadow-glow {
     box-shadow: var(--shadow-glow);
   }
+
+  .hero-grid-bg {
+    background-image:
+      linear-gradient(rgba(13, 17, 23, 0.97) 0%, transparent 50%),
+      linear-gradient(90deg, rgba(99, 102, 241, 0.06) 1px, transparent 1px),
+      linear-gradient(rgba(99, 102, 241, 0.06) 1px, transparent 1px);
+    background-size: 100% 100%, 60px 60px, 60px 60px;
+    background-position: 0 0, 0 0, 0 0;
+  }
+
+  .fade-in-up {
+    opacity: 0;
+    transform: translateY(12px);
+    animation: fadeInUp 700ms ease-out forwards;
+  }
+
+  .fade-in-up-delay {
+    opacity: 0;
+    transform: translateY(12px);
+    animation: fadeInUp 700ms ease-out 150ms forwards;
+  }
+
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }
 
 html {

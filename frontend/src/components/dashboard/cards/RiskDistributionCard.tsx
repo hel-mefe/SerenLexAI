@@ -107,13 +107,6 @@ const LABEL_COLORS: Record<Tone, string> = {
   low: 'text-risk-low',
 }
 
-/** Risk-colored background gradients for the 3 cards (satisfying, not overwhelming) */
-const CARD_GRADIENTS: Record<Tone, string> = {
-  high: 'linear-gradient(145deg, #FEF2F2 0%, #FEE2E2 40%, #FECACA 100%)',
-  medium: 'linear-gradient(145deg, #FFFBEB 0%, #FEF3C7 40%, #FDE68A 100%)',
-  low: 'linear-gradient(145deg, #ECFDF5 0%, #D1FAE5 40%, #A7F3D0 100%)',
-}
-
 function RiskLevelCard({
   tone,
   label,
@@ -124,17 +117,13 @@ function RiskLevelCard({
 }: RiskLevelCardProps) {
   const percent = total ? Math.round((count / total) * 100) : 0
   const labelColor = LABEL_COLORS[tone]
-  const gradient = CARD_GRADIENTS[tone]
 
   return (
-    <div
-      className="rounded-2xl p-4 flex flex-col gap-3 border border-white/40 shadow-sm"
-      style={{ background: gradient }}
-    >
+    <div className="rounded-2xl p-4 flex flex-col gap-3 border border-slate-200 bg-white shadow-sm">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div
-            className={`w-8 h-8 rounded-xl flex items-center justify-center bg-white/70 border border-white/60 ${labelColor}`}
+            className={`w-8 h-8 rounded-xl flex items-center justify-center bg-slate-50 border border-slate-200 ${labelColor}`}
           >
             <Icon className="w-4 h-4" />
           </div>

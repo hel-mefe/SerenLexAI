@@ -3,6 +3,7 @@ import { PublicLayout } from './PublicLayout'
 import { ProtectedRoute } from './ProtectedRoute'
 
 import SignInPage from '@/pages/SignInPage'
+import { LandingPage } from '@/pages/LandingPage'
 
 import { DashboardLayout } from '@/components/layouts/DashboardLayout.tsx'
 import { DashboardPage } from '@/pages/dashboard'
@@ -14,9 +15,12 @@ import { NewAnalysisPage } from '@/pages/dashboard/Analyses/New'
 export function AppRouter() {
   return (
     <Routes>
-      {/* Public */}
+      {/* Landing (public) */}
+      <Route path="/" element={<LandingPage />} />
+
+      {/* Sign in */}
       <Route
-        path="/"
+        path="/signin"
         element={
           <PublicLayout>
             <SignInPage />
@@ -33,16 +37,13 @@ export function AppRouter() {
           </ProtectedRoute>
         }
       >
-        {/* Default Dashboard Home */}
         <Route index element={<DashboardPage />} />
-
         <Route path="analyses" element={<AnalysesPage />} />
         <Route path="history" element={<HistoryPage />} />
         <Route path="analyses/:analysisId" element={<AnalysisReportPage />} />
         <Route path="analyses/new" element={<NewAnalysisPage />} />
       </Route>
 
-      {/* Fallback */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )

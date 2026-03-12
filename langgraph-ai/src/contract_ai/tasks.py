@@ -5,6 +5,24 @@ from typing import Any, Dict
 
 from .application.workflows.contract_analysis_graph import build_graph
 from .celery_app import celery_app
+from .domain.exceptions import DocumentTooLongError
+from .infrastructure.db import SessionLocal
+from .infrastructure.models import Analysis
+
+
+def _mark_analysis_failed(analysis_id: str, reason: str = "Analysis failed.") -> None:
+    """Update the analysis row to status='failed' so the UI can show failure."""
+    db = SessionLocal()
+    try:
+        aid = uuid.UUID(analysis_id)
+        row = db.get(Analysis, aid)
+        if row:
+            row.status = "failed"
+            db.commit()
+    except (TypeError, ValueError):
+        pass
+    finally:
+        db.close()
 
 
 @celery_app.task(name="contract_ai.run_analysis")
@@ -17,28 +35,24 @@ def run_analysis_task(payload: Dict[str, Any]) -> None:
   - pdf_path: absolute or container-local path to the PDF to analyse,
     OR an object storage key/URL (e.g. MinIO) if your graph knows how to fetch it.
 
-  This function delegates all heavy lifting to the LangGraph workflow
-  defined in `contract_analysis_graph.build_graph()`. The graph is
-  responsible for:
-  - reading the PDF (from pdf_path),
-  - running the document / clause / risk analysis,
-  - persisting results via its own persistence nodes.
+  Rejects PDFs with more than 20 pages (validated in the graph); marks the
+  analysis as 'failed' in the DB when that happens so the backend/UI can show it.
   """
   analysis_id = str(payload.get("analysis_id") or uuid.uuid4())
   pdf_path = payload.get("pdf_path")
 
   if not pdf_path:
-    # Nothing to do without a document location; fail fast.
-    # Celery will record this as a task failure in the result backend.
     raise ValueError("run_analysis_task: 'pdf_path' is required in payload")
 
   graph = build_graph()
-
   state: Dict[str, Any] = {
     "analysis_id": analysis_id,
     "pdf_path": pdf_path,
   }
 
-  # Fire the full graph; any persistence/reporting is handled by its nodes.
-  graph.invoke(state)
+  try:
+    graph.invoke(state)
+  except DocumentTooLongError as e:
+    _mark_analysis_failed(analysis_id, str(e))
+    raise
 
