@@ -55,4 +55,11 @@ def run_analysis_task(payload: Dict[str, Any]) -> None:
   except DocumentTooLongError as e:
     _mark_analysis_failed(analysis_id, str(e))
     raise
+  except FileNotFoundError as e:
+    msg = (
+      "PDF not found. Ensure the API and AI worker share the same uploads volume "
+      "(e.g. both run from the same docker-compose with uploads_data mounted at /app/uploads)."
+    )
+    _mark_analysis_failed(analysis_id, msg)
+    raise
 

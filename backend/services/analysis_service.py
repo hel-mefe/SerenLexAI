@@ -258,8 +258,8 @@ class AnalysisService:
         self._analyses.create(analysis)
         self._db.flush()
 
-        # Save PDF to shared uploads dir for langgraph-ai worker
-        upload_dir = Path(settings.UPLOAD_DIR)
+        # Save PDF to shared uploads dir for langgraph-ai worker (must be same path in worker container)
+        upload_dir = Path(settings.UPLOAD_DIR).resolve()
         upload_dir.mkdir(parents=True, exist_ok=True)
         pdf_path = upload_dir / f"{analysis.id}.pdf"
         pdf_path.write_bytes(file_content)

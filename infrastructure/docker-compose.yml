@@ -95,6 +95,7 @@ services:
 volumes:
   postgres_data:
   minio_data:
+  # api and ai_worker must both mount this at /app/uploads so the worker can read PDFs the API saves
   uploads_data:
   reports_data:
 
