@@ -1,0 +1,2 @@
+# Keeps this directory in git; uploaded PDFs (not committed) go here.
+# API and ai_worker both mount this at /app/uploads so they share the same files.

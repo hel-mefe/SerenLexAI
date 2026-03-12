@@ -47,8 +47,8 @@ services:
     volumes:
       # Hot reload API code without rebuilding the image
       - ../backend:/app:cached
-      # Shared uploads dir for AI worker to read PDFs
-      - uploads_data:/app/uploads
+      # Shared uploads dir: same host path for api and ai_worker so worker can read PDFs
+      - ./data/uploads:/app/uploads
       # Shared reports dir for AI worker to write / API to serve report PDFs
       - reports_data:/app/reports
     depends_on:
@@ -58,7 +58,7 @@ services:
     command:
       - sh
       - -c
-      - alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+      - "mkdir -p /app/uploads && alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
     ports:
       - "8000:8000"
     networks:
@@ -81,8 +81,8 @@ services:
     volumes:
       # Mount only source to avoid clobbering the image's .venv
       - ../langgraph-ai/src:/app/src:cached
-      # Shared uploads dir to read PDFs saved by the API
-      - uploads_data:/app/uploads
+      # Same host dir as api so worker can read PDFs the API wrote
+      - ./data/uploads:/app/uploads
       # Shared reports dir to write generated report PDFs
       - reports_data:/app/reports
     depends_on:
@@ -95,8 +95,6 @@ services:
 volumes:
   postgres_data:
   minio_data:
-  # api and ai_worker must both mount this at /app/uploads so the worker can read PDFs the API saves
-  uploads_data:
   reports_data:
 
 networks:
