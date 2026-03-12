@@ -1,6 +1,8 @@
+
 SECURITY.md
 backend/.env
 frontend/.env
+frontend/.env.example
 infrastructure/.env
 infrastructure/env
 .env
